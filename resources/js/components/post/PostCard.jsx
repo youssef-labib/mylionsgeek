@@ -2,9 +2,7 @@ import { router, usePage } from '@inertiajs/react';
 import { useCallback, useEffect, useState } from 'react';
 import { timeAgo } from '../../lib/utils';
 import { helpers } from '../utils/helpers';
-import PostCardFooter from './PostCardFooter';
-import PostCardHeader from './PostCardHeader';
-import PostCardMainContent from './PostCardMainContent';
+import PostCardItem from './PostCardItem';
 
 const PostCard = ({ user, posts, openModalPostId = null, onConsumedHashModal }) => {
     const { auth } = usePage().props;
@@ -93,48 +91,24 @@ const PostCard = ({ user, posts, openModalPostId = null, onConsumedHashModal }) 
 
     return (
         <>
-            {postList?.map((p, index) => {
-                const isDeleting = deletingPostId === p.id;
-                return (
-                    <div key={p.id ?? index} className="relative mb-4 overflow-hidden rounded-lg bg-white shadow dark:bg-dark_gray">
-                        {isDeleting && (
-                            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 text-sm font-semibold text-dark dark:bg-dark/70 dark:text-light">
-                                Deleting...
-                            </div>
-                        )}
-                        {/* Post Header */}
-                        <PostCardHeader
-                            post={p}
-                            user={auth.user}
-                            takeUserProfile={takeToUserProfile}
-                            timeAgo={timeAgo}
-                            onDeletePost={handleDeletePost}
-                            isDeleting={isDeleting}
-                        />
-
-                        {/* Post Content */}
-                        <PostCardMainContent
-                            post={p}
-                            user={auth.user}
-                            addOrRemoveFollow={addOrRemoveFollow}
-                            timeAgo={timeAgo}
-                            takeToUserProfile={takeToUserProfile}
-                            openModalPostId={openModalPostId}
-                            onConsumedHashModal={onConsumedHashModal}
-                            openModalForComments={openCommentsForPostId === p.id}
-                            onConsumedCommentOpen={clearCommentOpenIntent}
-                        />
-
-                        {/* post footer */}
-                        <PostCardFooter
-                            post={p}
-                            user={auth.user}
-                            takeToUserProfile={takeToUserProfile}
-                            onCommentPress={() => setOpenCommentsForPostId(p.id)}
-                        />
-                    </div>
-                );
-            })}
+            {postList?.map((p, index) => (
+                <PostCardItem
+                    key={p.id ?? index}
+                    post={p}
+                    authUser={auth.user}
+                    user={user}
+                    isDeleting={deletingPostId === p.id}
+                    takeToUserProfile={takeToUserProfile}
+                    timeAgo={timeAgo}
+                    onDeletePost={handleDeletePost}
+                    addOrRemoveFollow={addOrRemoveFollow}
+                    openModalPostId={openModalPostId}
+                    onConsumedHashModal={onConsumedHashModal}
+                    openModalForComments={openCommentsForPostId === p.id}
+                    onConsumedCommentOpen={clearCommentOpenIntent}
+                    onCommentPress={() => setOpenCommentsForPostId(p.id)}
+                />
+            ))}
         </>
     );
 };
