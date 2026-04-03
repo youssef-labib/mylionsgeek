@@ -1,5 +1,6 @@
-const PostTextarea = ({ value, onChange, placeholder, disabled = false }) => (
+const PostTextarea = ({ id, value, onChange, placeholder, disabled = false }) => (
     <textarea
+        id={id}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
