@@ -11,6 +11,11 @@ const PostCard = ({ user, posts, openModalPostId = null, onConsumedHashModal }) 
     const { addOrRemoveFollow } = helpers();
     const [postList, setPostList] = useState(posts ?? []);
     const [deletingPostId, setDeletingPostId] = useState(null);
+    const [openCommentsForPostId, setOpenCommentsForPostId] = useState(null);
+
+    const clearCommentOpenIntent = useCallback(() => {
+        setOpenCommentsForPostId(null);
+    }, []);
 
     useEffect(() => {
         setPostList(posts ?? []);
@@ -116,10 +121,17 @@ const PostCard = ({ user, posts, openModalPostId = null, onConsumedHashModal }) 
                             takeToUserProfile={takeToUserProfile}
                             openModalPostId={openModalPostId}
                             onConsumedHashModal={onConsumedHashModal}
+                            openModalForComments={openCommentsForPostId === p.id}
+                            onConsumedCommentOpen={clearCommentOpenIntent}
                         />
 
                         {/* post footer */}
-                        <PostCardFooter post={p} user={auth.user} takeToUserProfile={takeToUserProfile} />
+                        <PostCardFooter
+                            post={p}
+                            user={auth.user}
+                            takeToUserProfile={takeToUserProfile}
+                            onCommentPress={() => setOpenCommentsForPostId(p.id)}
+                        />
                     </div>
                 );
             })}

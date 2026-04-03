@@ -3,8 +3,19 @@ import { Link } from '@inertiajs/react';
 import { helpers } from '../utils/helpers';
 import PostModal from './PostModal';
 
-const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUserProfile, openModalPostId, onConsumedHashModal }) => {
+const PostCardMainContent = ({
+    post,
+    user,
+    addOrRemoveFollow,
+    timeAgo,
+    takeToUserProfile,
+    openModalPostId,
+    onConsumedHashModal,
+    openModalForComments,
+    onConsumedCommentOpen,
+}) => {
     const [openPostModal, setOpenPostModal] = useState(false);
+    const [scrollToCommentsAfterOpen, setScrollToCommentsAfterOpen] = useState(false);
     const { resolvePostImageUrl } = helpers();
     const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
@@ -24,10 +35,21 @@ const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUse
         }
     }, [openModalPostId, post?.id]);
 
+    useEffect(() => {
+        if (openModalForComments && post?.id) {
+            setOpenPostModal(true);
+            setScrollToCommentsAfterOpen(true);
+            onConsumedCommentOpen?.();
+        }
+    }, [openModalForComments, post?.id, onConsumedCommentOpen]);
+
     const handlePostModalOpenChange = (open) => {
         setOpenPostModal(open);
-        if (!open && openModalPostId != null && post?.id === openModalPostId) {
-            onConsumedHashModal?.();
+        if (!open) {
+            setScrollToCommentsAfterOpen(false);
+            if (openModalPostId != null && post?.id === openModalPostId) {
+                onConsumedHashModal?.();
+            }
         }
     };
 
@@ -144,6 +166,8 @@ const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUse
                     user={user}
                     addOrRemovFollow={addOrRemoveFollow}
                     takeToUserProfile={takeToUserProfile}
+                    scrollToCommentsOnOpen={scrollToCommentsAfterOpen}
+                    onScrollToCommentsConsumed={() => setScrollToCommentsAfterOpen(false)}
                 />
             )}
         </>
