@@ -13,7 +13,7 @@ use Inertia\Inertia;
 Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable'])->prefix('students')->group(function () {
     Route::put('/update/{user}', [UsersController::class, 'update']);
     Route::get('/feed', [StudentController::class, 'index'])->name('student.feed');
-    Route::get('/{id}', [StudentController::class, 'userProfile']);
+    Route::get('/{id}', [StudentController::class, 'userProfile'])->whereNumber('id');
     Route::post('/changeCover/{id}', [StudentController::class, 'changeCover']);
     Route::post('/changeProfileImage/{id}', [StudentController::class, 'changeProfileImage']);
     Route::post('/about/{id}', [StudentController::class, 'updateAbout']);

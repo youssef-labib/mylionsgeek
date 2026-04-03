@@ -9,18 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('wakatime_api_key')->nullable()->after('email');
-    });
-}
+//    public function up()
+// {
+//     Schema::table('users', function (Blueprint $table) {
+//         $table->string('wakatime_api_key')->nullable()->after('email');
+//     });
+// }
 
-public function down()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('wakatime_api_key');
-    });
-}
+// public function down()
+// {
+//     Schema::table('users', function (Blueprint $table) {
+//         $table->dropColumn('wakatime_api_key');
+//     });
+// }
 
 };
