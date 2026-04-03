@@ -12,7 +12,6 @@ export default function PostCommentComposer({
     clearNewCommentImage,
     onSubmit,
     submitting,
-    compressingImage,
 }) {
     return (
         <form onSubmit={onSubmit} className={getComposerFormClass(isFacebookEmbed, embedded)}>
@@ -64,14 +63,10 @@ export default function PostCommentComposer({
 
                     <button
                         type="submit"
-                        disabled={submitting || compressingImage || (!newComment.trim() && !newCommentImage)}
+                        disabled={submitting || (!newComment.trim() && !newCommentImage)}
                         className="rounded-lg bg-alpha px-5 py-2.5 font-semibold text-black shadow-md transition-all duration-200 hover:bg-yellow-300 hover:shadow-lg focus:ring-2 focus:ring-alpha/50 focus:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {submitting ? (
-                            <div className="flex items-center justify-center">
-                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                            </div>
-                        ) : compressingImage ? (
                             <div className="flex items-center justify-center">
                                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                             </div>

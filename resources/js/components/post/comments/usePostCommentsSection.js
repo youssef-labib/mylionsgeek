@@ -15,7 +15,6 @@ export function usePostCommentsSection({
     const [newComment, setNewComment] = useState('');
     const [newCommentImage, setNewCommentImage] = useState(null);
     const [newCommentImagePreview, setNewCommentImagePreview] = useState(null);
-    const [compressingImage, setCompressingImage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [openUpdatedComment, setOpenUpdatedComment] = useState(null);
@@ -364,7 +363,6 @@ export function usePostCommentsSection({
         clearNewCommentImage,
         handleSubmit,
         submitting,
-        compressingImage,
         openDelete,
         setOpenDelete,
         deletedCommentId,

@@ -31,7 +31,6 @@ function PostCommentsSection({
         clearNewCommentImage,
         handleSubmit,
         submitting,
-        compressingImage,
         openDelete,
         setOpenDelete,
         deletedCommentId,
@@ -83,7 +82,6 @@ function PostCommentsSection({
                     clearNewCommentImage={clearNewCommentImage}
                     onSubmit={handleSubmit}
                     submitting={submitting}
-                    compressingImage={compressingImage}
                 />
 
                 <PostCommentsThread
