@@ -471,7 +471,7 @@ function PostCommentsSection({
                 <div
                     className={
                         isFacebookEmbed
-                            ? `${listScrollClass} max-h-[min(50vh,420px)] overflow-y-auto sm:max-h-[min(55vh,480px)]`
+                            ? listScrollClass
                             : embedded
                               ? `${listScrollClass} max-h-[min(50vh,420px)] overflow-y-auto`
                               : `${listScrollClass} min-h-0`
