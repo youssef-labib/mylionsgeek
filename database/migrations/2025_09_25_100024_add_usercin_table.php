@@ -9,22 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        //
-            Schema::table('users', function (Blueprint $table) {
-            $table->string('cin')->nullable()->change(); 
-        });
-    }
+    // public function up(): void
+    // {
+    //     //
+    //         Schema::table('users', function (Blueprint $table) {
+    //         $table->string('cin')->nullable()->change(); 
+    //     });
+    // }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        //
-           Schema::table('users', function (Blueprint $table) {
-            $table->string('cin')->nullable(false)->change();
-        });
-    }
+    // public function down(): void
+    // {
+    //     //
+    //        Schema::table('users', function (Blueprint $table) {
+    //         $table->string('cin')->nullable(false)->change();
+    //     });
+    // }
 };
