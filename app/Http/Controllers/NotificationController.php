@@ -374,7 +374,7 @@ class NotificationController extends Controller
                     'sender_name' => $senderName,
                     'sender_image' => $senderImage,
                     'message' => $message,
-                    'link' => '/feed#' . $notif->post_id,
+                    'link' => '/students/feed#post-' . $notif->post_id,
                     'icon_type' => 'user',
                     'created_at' => $notif->created_at->toISOString(),
                     'read_at' => $notif->read_at ? $notif->read_at->toISOString() : null,

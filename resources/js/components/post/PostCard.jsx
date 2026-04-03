@@ -6,7 +6,7 @@ import PostCardFooter from './PostCardFooter';
 import PostCardHeader from './PostCardHeader';
 import PostCardMainContent from './PostCardMainContent';
 
-const PostCard = ({ user, posts }) => {
+const PostCard = ({ user, posts, openModalPostId = null, onConsumedHashModal }) => {
     const { auth } = usePage().props;
     const { addOrRemoveFollow } = helpers();
     const [postList, setPostList] = useState(posts ?? []);
@@ -114,6 +114,8 @@ const PostCard = ({ user, posts }) => {
                             addOrRemoveFollow={addOrRemoveFollow}
                             timeAgo={timeAgo}
                             takeToUserProfile={takeToUserProfile}
+                            openModalPostId={openModalPostId}
+                            onConsumedHashModal={onConsumedHashModal}
                         />
 
                         {/* post footer */}

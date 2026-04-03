@@ -64,7 +64,7 @@ class PostController extends Controller
                 'sender_name' => $sender->name,
                 'sender_image' => $sender->image,
                 'message' => $message,
-                'link' => '/feed#' . $post->id,
+                'link' => '/students/feed#post-' . $post->id,
                 'icon_type' => 'user',
                 'created_at' => $notification->created_at->toISOString(),
                 'post_id' => $post->id,

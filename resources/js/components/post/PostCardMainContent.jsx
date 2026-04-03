@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { helpers } from '../utils/helpers';
 import PostModal from './PostModal';
 
-const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUserProfile }) => {
+const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUserProfile, openModalPostId, onConsumedHashModal }) => {
     const [openPostModal, setOpenPostModal] = useState(false);
     const { resolvePostImageUrl } = helpers();
     const [expandedDescriptions, setExpandedDescriptions] = useState({});
@@ -17,6 +17,19 @@ const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUse
     const hasMore = post?.description?.length > 120;
     const isExpanded = expandedDescriptions[post?.id];
     const displayText = hasMore && !isExpanded ? post.description.slice(0, 200) + '...' : post.description;
+
+    useEffect(() => {
+        if (openModalPostId != null && post?.id === openModalPostId) {
+            setOpenPostModal(true);
+        }
+    }, [openModalPostId, post?.id]);
+
+    const handlePostModalOpenChange = (open) => {
+        setOpenPostModal(open);
+        if (!open && openModalPostId != null && post?.id === openModalPostId) {
+            onConsumedHashModal?.();
+        }
+    };
 
     const renderDescriptionWithMentions = (text) => {
         if (!text) return null;
@@ -116,22 +129,22 @@ const PostCardMainContent = ({ post, user, addOrRemoveFollow, timeAgo, takeToUse
                             ))}
                         </div>
                     )}
-                    {openPostModal && (
-                        <PostModal
-                            isOpen={openPostModal}
-                            onOpenChange={setOpenPostModal}
-                            post={post}
-                            displayText={displayText}
-                            hasMore={hasMore}
-                            isExpanded={isExpanded}
-                            toggleDescription={toggleDescription}
-                            timeAgo={timeAgo}
-                            user={user}
-                            addOrRemovFollow={addOrRemoveFollow}
-                            takeToUserProfile={takeToUserProfile}
-                        />
-                    )}
                 </div>
+            )}
+            {openPostModal && (
+                <PostModal
+                    isOpen={openPostModal}
+                    onOpenChange={handlePostModalOpenChange}
+                    post={post}
+                    displayText={displayText}
+                    hasMore={hasMore}
+                    isExpanded={isExpanded}
+                    toggleDescription={toggleDescription}
+                    timeAgo={timeAgo}
+                    user={user}
+                    addOrRemovFollow={addOrRemoveFollow}
+                    takeToUserProfile={takeToUserProfile}
+                />
             )}
         </>
     );
