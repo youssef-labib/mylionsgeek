@@ -189,59 +189,94 @@ class UsersController extends Controller
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    protected function mapPostForFeed(Post $post, User $authUser): array
+    {
+        return [
+            'user_id' => $post->user_id,
+            'user_name' => $post->user->name,
+            'user_image' => $post->user->image,
+            'user_last_online' => $post->user->last_online,
+            'user_status' => $post->user->status,
+            'user_formation' => $post->user->formation?->name,
+
+            'id' => $post->id,
+            'description' => $post->description,
+            'mention_user_ids' => PostMentionResolver::mapTokensToUserIds($post->description),
+            'images' => $post->images,
+
+            'likes_count' => $post->likes_count,
+            'comments_count' => $post->comments_count,
+
+            'is_liked_by_current_user' => $post->likes->isNotEmpty(),
+
+            'created_at' => $post->created_at,
+
+            'is_following' => $authUser->following()->where('followed_id', $post->user_id)->exists(),
+        ];
+    }
+
     public function getPosts($user = null)
     {
-        // Get the authenticated user
         $authUser = Auth::user();
 
-        // Initialize the query with eager loading
         $dataPosts = Post::with([
             'user',
             'likes',
             'comments',
             'likes' => function ($query) use ($authUser) {
                 $query->where('user_id', $authUser->id);
-            }
+            },
         ])
             ->withCount(['likes', 'comments'])
             ->latest();
 
-        // If $user is truthy, filter by authenticated user
         if ($user) {
             $dataPosts = $dataPosts->where('user_id', $user->id);
         }
 
-        // Get the posts
         $dataPosts = $dataPosts->get();
 
-        // Map and format response
-        $posts = $dataPosts->map(function ($post) use ($authUser) {
-            return [
-                'user_id' => $post->user_id,
-                'user_name' => $post->user->name,
-                'user_image' => $post->user->image,
-                'user_last_online' => $post->user->last_online,
-                'user_status' => $post->user->status,
-                'user_formation' => $post->user->formation?->name,
-
-                'id' => $post->id,
-                'description' => $post->description,
-                'mention_user_ids' => PostMentionResolver::mapTokensToUserIds($post->description),
-                'images' => $post->images,
-
-                'likes_count' => $post->likes_count,
-                'comments_count' => $post->comments_count,
-
-                // Check if the likes collection contains any likes from the current user
-                'is_liked_by_current_user' => $post->likes->isNotEmpty(),
-
-                'created_at' => $post->created_at,
-
-                'is_following' =>  Auth::user()->following()->where('followed_id', $post->user_id)->exists()
-            ];
-        });
+        $posts = $dataPosts->map(fn (Post $post) => $this->mapPostForFeed($post, $authUser));
 
         return ['posts' => $posts];
+    }
+
+    /**
+     * Posts for a profile user (feed-shaped). Optional limit for preview; total is always full count.
+     *
+     * @return array{posts: \Illuminate\Support\Collection, total: int}
+     */
+    public function getPostsForProfileUser(int $profileUserId, ?int $limit = null): array
+    {
+        $authUser = Auth::user();
+
+        $query = Post::with([
+            'user',
+            'likes',
+            'comments',
+            'likes' => function ($q) use ($authUser) {
+                $q->where('user_id', $authUser->id);
+            },
+        ])
+            ->withCount(['likes', 'comments'])
+            ->where('user_id', $profileUserId)
+            ->latest();
+
+        if ($limit !== null) {
+            $query->limit($limit);
+        }
+
+        $dataPosts = $query->get();
+        $posts = $dataPosts->map(fn (Post $post) => $this->mapPostForFeed($post, $authUser));
+        $total = (int) Post::where('user_id', $profileUserId)->count();
+
+        return [
+            'posts' => $posts,
+            'total' => $total,
+        ];
     }
 
 

@@ -21,7 +21,7 @@ function parseFeedPostIdFromHash() {
     return null;
 }
 
-export default function CenterFeed({ user, posts }) {
+export default function CenterFeed({ user, posts, showComposer = true, lead = null , displayAddPost = true }) {
     const [openAddPost, setOpenAddPost] = useState(false);
     const [openModalPostIdFromHash, setOpenModalPostIdFromHash] = useState(null);
 
@@ -44,43 +44,39 @@ export default function CenterFeed({ user, posts }) {
         <>
             {/* Center Feed - Scrollable */}
             <div className="space-y-4 lg:col-span-9">
-                {/* Create Post Box */}
-                <div className="rounded-lg bg-white p-4 shadow shadow-alpha/10 dark:bg-dark_gray">
-                    <div className="mb-4 flex items-center gap-3">
-                        <Link href={'/students/' + user.id}>
-                            <Avatar
-                                className="h-12 w-12 overflow-hidden rounded-full"
-                                image={user?.image}
-                                name={user?.name}
-                                lastActivity={user?.last_online || null}
-                                onlineCircleClass="hidden"
-                            />
-                        </Link>
-                        <button
-                            onClick={() => setOpenAddPost(true)}
-                            className="flex-1 cursor-pointer rounded-lg border-2 border-beta bg-transparent px-4 py-2 text-left text-foreground/70 opacity-80 transition-all duration-300 hover:bg-beta/5 dark:border-alpha/80 dark:hover:bg-light/5"
-                        >
-                            Whats on your mind today ....
-                        </button>
+                {lead}
+                {showComposer && displayAddPost && (
+                    <div className="rounded-lg bg-white p-4 shadow shadow-alpha/10 dark:bg-dark_gray">
+                        <div className="mb-4 flex items-center gap-3">
+                            <Link href={'/students/' + user.id}>
+                                <Avatar
+                                    className="h-12 w-12 overflow-hidden rounded-full"
+                                    image={user?.image}
+                                    name={user?.name}
+                                    lastActivity={user?.last_online || null}
+                                    onlineCircleClass="hidden"
+                                />
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => setOpenAddPost(true)}
+                                className="flex-1 cursor-pointer rounded-lg border-2 border-beta bg-transparent px-4 py-2 text-left text-foreground/70 opacity-80 transition-all duration-300 hover:bg-beta/5 dark:border-alpha/80 dark:hover:bg-light/5"
+                            >
+                                Whats on your mind today ....
+                            </button>
+                        </div>
+                        <div className="flex justify-around">
+                            <button
+                                type="button"
+                                onClick={() => setOpenAddPost(true)}
+                                className="flex items-center gap-2 rounded-full px-4 py-2 hover:bg-dark/5 dark:hover:bg-light/5"
+                            >
+                                <Image className="h-5 w-5 text-beta dark:text-alpha" />
+                                <span className="text-sm text-beta dark:text-alpha">Media</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex justify-around">
-                        <button
-                            onClick={() => setOpenAddPost(true)}
-                            className="flex items-center gap-2 rounded-full px-4 py-2 hover:bg-dark/5 dark:hover:bg-light/5"
-                        >
-                            <Image className="h-5 w-5 text-beta dark:text-alpha" />
-                            <span className="text-sm text-beta dark:text-alpha">Media</span>
-                        </button>
-                        {/* <button className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded">
-                            <Calendar className="w-5 h-5 text-orange-500" />
-                            <span className="text-sm font-medium">Event</span>
-                        </button>
-                        <button className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded">
-                            <FileText className="w-5 h-5 text-red-500" />
-                            <span className="text-sm font-medium">Write article</span>
-                        </button> */}
-                    </div>
-                </div>
+                )}
 
                 {/* Post Card */}
 
@@ -234,7 +230,7 @@ export default function CenterFeed({ user, posts }) {
                 {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center text-gray-500 dark:text-gray-400">
                     <p>More posts would appear here...</p>
                 </div> */}
-                {openAddPost && <CreatePostModal user={user} onOpen={openAddPost} onOpenChange={setOpenAddPost} />}
+                {showComposer && openAddPost && <CreatePostModal user={user} onOpen={openAddPost} onOpenChange={setOpenAddPost} />}
             </div>
         </>
     );

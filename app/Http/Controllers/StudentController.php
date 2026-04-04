@@ -32,8 +32,26 @@ class StudentController extends Controller
     public function userProfile($id)
     {
         $user = $this->getUserInfo($id);
+        $usersController = new UsersController();
+        $profilePosts = $usersController->getPostsForProfileUser((int) $id, 1);
+
         return Inertia::render('students/user/partials/StudentProfile', [
-            'user' => $user
+            'user' => $user,
+            'profilePostsPreview' => $profilePosts['posts']->values()->all(),
+            'profilePostsTotal' => $profilePosts['total'],
+        ]);
+    }
+
+    public function userPosts($id)
+    {
+        $user = $this->getUserInfo($id);
+        $usersController = new UsersController();
+        $profilePosts = $usersController->getPostsForProfileUser((int) $id, null);
+
+        return Inertia::render('students/user/UserPosts', [
+            'user' => $user,
+            'posts' => $profilePosts['posts']->values()->all(),
+            'postsTotal' => $profilePosts['total'],
         ]);
     }
     public function getUserInfo($id)
@@ -78,6 +96,7 @@ class StudentController extends Controller
                 'promo' => $user->promo,
                 'cover' => $user->cover,
                 'name' => $user->name,
+                'last_online' => $user->last_online,
                 'status' => $user->status,
                 'field' => $user->field,
                 'phone' => $user->phone,
