@@ -9,7 +9,7 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { Building2, Folder, Home, Medal, Menu, Search, Timer } from 'lucide-react';
+import { Briefcase, Building2, Folder, Home, Medal, Menu, Search, Timer } from 'lucide-react';
 import AppLogo from './app-logo';
 import ChatIcon from './chat/ChatIcon';
 import NotificationIcon from './NotificationIcon';
@@ -26,6 +26,11 @@ export function AppHeader({ breadcrumbs = [] }) {
             title: 'Home',
             url: '/students/feed',
             icon: Home,
+        },
+        {
+            title: 'Jobs',
+            url: '/students/jobs',
+            icon: Briefcase,
         },
         {
             title: 'Leaderboard',
@@ -51,6 +56,15 @@ export function AppHeader({ breadcrumbs = [] }) {
         // },
     ];
     const getInitials = useInitials();
+
+    const navPath = page.url.split('?')[0];
+    const isNavActive = (item) => {
+        if (item.url === '/students/jobs') {
+            return navPath.startsWith('/students/jobs');
+        }
+        return navPath === item.url;
+    };
+
     return (
         <>
             <div
@@ -115,14 +129,14 @@ export function AppHeader({ breadcrumbs = [] }) {
                                             href={item.url}
                                             className={cn(
                                                 navigationMenuTriggerStyle(),
-                                                page.url === item.url && activeItemStyles,
+                                                isNavActive(item) && activeItemStyles,
                                                 'h-9 cursor-pointer px-3',
                                             )}
                                         >
                                             {item.icon && <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />}
                                             {item.title}
                                         </Link>
-                                        {page.url === item.url && (
+                                        {isNavActive(item) && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-alpha dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>
