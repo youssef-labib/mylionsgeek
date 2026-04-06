@@ -362,6 +362,8 @@ class NotificationController extends Controller
                     $message = "{$senderName} commented on your post";
                 } elseif ($notif->type === 'comment_like') {
                     $message = "{$senderName} liked your comment";
+                } elseif ($notif->type === 'mention') {
+                    $message = "{$senderName} mentioned you in a post";
                 } else {
                     $message = "{$senderName} interacted with your post";
                 }
@@ -372,7 +374,7 @@ class NotificationController extends Controller
                     'sender_name' => $senderName,
                     'sender_image' => $senderImage,
                     'message' => $message,
-                    'link' => '/feed#' . $notif->post_id,
+                    'link' => '/students/feed#post-' . $notif->post_id,
                     'icon_type' => 'user',
                     'created_at' => $notif->created_at->toISOString(),
                     'read_at' => $notif->read_at ? $notif->read_at->toISOString() : null,

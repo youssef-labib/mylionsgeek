@@ -30,6 +30,7 @@ use App\Models\Note;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Reservation;
+use App\Support\PostMentionResolver;
 use App\Models\UserProject;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\ExportService;
@@ -225,6 +226,7 @@ class UsersController extends Controller
 
                 'id' => $post->id,
                 'description' => $post->description,
+                'mention_user_ids' => PostMentionResolver::mapTokensToUserIds($post->description),
                 'images' => $post->images,
 
                 'likes_count' => $post->likes_count,

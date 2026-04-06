@@ -6,6 +6,8 @@ use Ably\AblyRest;
 use App\Models\Comment;
 use App\Models\CommentLike;
 use App\Models\Post;
+use App\Models\User;
+use App\Support\PostMentionResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +54,7 @@ class PostController extends Controller
                 'like' => "{$sender->name} liked your post",
                 'comment' => "{$sender->name} commented on your post",
                 'comment_like' => "{$sender->name} liked your comment",
+                'mention' => "{$sender->name} mentioned you in a post",
                 default => "{$sender->name} interacted with your post"
             };
             
@@ -61,7 +64,7 @@ class PostController extends Controller
                 'sender_name' => $sender->name,
                 'sender_image' => $sender->image,
                 'message' => $message,
-                'link' => '/feed#' . $post->id,
+                'link' => '/students/feed#post-' . $post->id,
                 'icon_type' => 'user',
                 'created_at' => $notification->created_at->toISOString(),
                 'post_id' => $post->id,
@@ -619,11 +622,33 @@ class PostController extends Controller
 
         $imagesArray = $this->sanitizeImageNames($this->persistUploadedImages($uploadedFiles));
 
-        Post::create([
+        $post = Post::create([
             'user_id' => Auth::id(),
             'description' => $request->description,
             'images' => $imagesArray,
         ]);
+
+        // Handle @mentions in the post description
+        if (!empty($request->description)) {
+            $mentionedUserIds = $this->extractMentionedUserIds($request->description);
+
+            if (!empty($mentionedUserIds)) {
+                $sender = Auth::user();
+
+                foreach ($mentionedUserIds as $mentionedUserId) {
+                    $notification = \App\Models\PostNotification::createNotification(
+                        $mentionedUserId,
+                        $sender?->id,
+                        $post->id,
+                        'mention'
+                    );
+
+                    if ($notification && $sender) {
+                        $this->broadcastNotification($notification, $sender, $post, 'mention');
+                    }
+                }
+            }
+        }
 
         $posts = Post::withCount(['likes', 'comments'])->latest()->get();
 
@@ -631,6 +656,19 @@ class PostController extends Controller
             'success' => 'Post Created Successfully',
             'posts' => $posts
         ]);
+    }
+
+    /**
+     * Extract unique mentioned user IDs from a post description.
+     *
+     * Mentions are expected in the form @AccountName where AccountName
+     * matches the user's name with spaces removed (case-insensitive).
+     */
+    private function extractMentionedUserIds(?string $description): array
+    {
+        $map = PostMentionResolver::mapTokensToUserIds($description);
+
+        return array_values(array_unique(array_values($map)));
     }
 
     private function persistUploadedImages(array $files = []): array

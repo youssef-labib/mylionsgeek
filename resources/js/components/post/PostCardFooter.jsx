@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { subscribeToChannel } from '../../lib/ablyManager';
-import CommentsModal from './CommentsModal';
 import LikesModal from './LikesModal';
 
-const PostCardFooter = ({ user, post, takeToUserProfile, PostModal = true }) => {
+const PostCardFooter = ({ user, post, takeToUserProfile, PostModal = true, onCommentPress, variant = 'default' }) => {
+    const isFacebook = variant === 'facebook';
     const [likesCountMap, setLikesCountMap] = useState({});
     const [commentsCountMap, setCommentsCountMap] = useState({});
     const [likedPostIds, setLikedPostIds] = useState([]);
-    const [commentsOpenFor, setCommentsOpenFor] = useState(null);
     const [likesOpenFor, setLikesOpenFor] = useState(null);
 
     // Initialize counts and liked state on mount
@@ -91,24 +90,55 @@ const PostCardFooter = ({ user, post, takeToUserProfile, PostModal = true }) => 
         <>
             {/* Counts */}
             <div
-                className={`flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-dark_gray/70 ${!PostModal && 'dark:bg-dark'}`}
+                className={
+                    isFacebook
+                        ? 'flex items-center justify-between border-b border-border/60 px-4 py-2 text-[13px] text-muted-foreground dark:border-white/10 dark:text-light/60'
+                        : `flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-dark_gray/70 ${!PostModal && 'dark:bg-dark'}`
+                }
             >
-                <div className="cursor-pointer text-xs text-gray-600 hover:underline dark:text-gray-400" onClick={() => setLikesOpenFor(post?.id)}>
-                    {likeCount} Likes
+                <div
+                    className={`cursor-pointer hover:underline ${isFacebook ? '' : 'text-xs text-gray-600 dark:text-gray-400'}`}
+                    onClick={() => setLikesOpenFor(post?.id)}
+                >
+                    {likeCount} {isFacebook ? 'likes' : 'Likes'}
                 </div>
-                <div onClick={() => setCommentsOpenFor(post?.id)} className="cursor-pointer text-xs text-gray-600 hover:underline dark:text-gray-400">
-                    {commentCount} Comments
+                <div
+                    onClick={() => onCommentPress?.()}
+                    className="cursor-pointer text-xs text-gray-600 hover:underline dark:text-gray-400"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onCommentPress?.();
+                        }
+                    }}
+                >
+                    {commentCount} {isFacebook ? 'comments' : 'Comments'}
                 </div>
             </div>
 
             {/* Buttons */}
-            <div className={`flex items-center justify-around rounded-b-lg px-2 py-2 shadow-sm ${!PostModal ? 'bg-light dark:bg-dark' : ''}`}>
+            <div
+                className={
+                    isFacebook
+                        ? 'flex items-stretch '
+                        : `flex items-center justify-around rounded-b-lg px-2 py-2 shadow-sm ${!PostModal ? 'bg-light dark:bg-dark' : ''}`
+                }
+            >
                 {/* Like Button */}
                 <button
+                    type="button"
                     onClick={() => toggleLike(post?.id)}
-                    className={`flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 transition-colors duration-200 ${
-                        isLiked ? 'text-alpha' : 'text-beta hover:text-alpha dark:text-light'
-                    }`}
+                    className={
+                        isFacebook
+                            ? `flex flex-1 cursor-pointer items-center justify-center gap-2 py-2.5 text-[15px] font-semibold transition-colors hover:bg-muted/50 dark:hover:bg-white/5 ${
+                                  isLiked ? 'text-alpha' : 'text-beta dark:text-light'
+                              }`
+                            : `flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 transition-colors duration-200 ${
+                                  isLiked ? 'text-alpha' : 'text-beta hover:text-alpha dark:text-light'
+                              }`
+                    }
                 >
                     <svg
                         className={`h-5 w-5 ${isLiked ? 'text-alpha' : 'text-beta dark:text-light'}`}
@@ -123,13 +153,18 @@ const PostCardFooter = ({ user, post, takeToUserProfile, PostModal = true }) => 
                             d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
                         />
                     </svg>
-                    <span className="text-sm font-semibold">{isLiked ? 'Liked' : 'Like'}</span>
+                    <span className={isFacebook ? 'font-semibold' : 'text-sm font-semibold'}>{isLiked ? 'Liked' : 'Like'}</span>
                 </button>
 
                 {/* Comment Button */}
                 <button
-                    className="flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-beta transition-colors duration-200 hover:bg-dark_gray/10 hover:text-beta dark:text-light dark:hover:bg-light/10"
-                    onClick={() => setCommentsOpenFor(post?.id)}
+                    type="button"
+                    className={
+                        isFacebook
+                            ? 'flex flex-1 cursor-pointer items-center justify-center gap-2 py-2.5 text-[15px] font-semibold text-beta transition-colors hover:bg-muted/50 dark:text-light dark:hover:bg-white/5'
+                            : 'flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-beta transition-colors duration-200 hover:bg-dark_gray/10 hover:text-beta dark:text-light dark:hover:bg-light/10'
+                    }
+                    onClick={() => onCommentPress?.()}
                 >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
@@ -139,22 +174,9 @@ const PostCardFooter = ({ user, post, takeToUserProfile, PostModal = true }) => 
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                         />
                     </svg>
-                    <span className="text-sm font-semibold">Comment</span>
+                    <span className={isFacebook ? 'font-semibold' : 'text-sm font-semibold'}>Comment</span>
                 </button>
             </div>
-
-            {/* Comments modal */}
-            {commentsOpenFor && (
-                <CommentsModal
-                    postId={commentsOpenFor}
-                    open={!!commentsOpenFor}
-                    onClose={() => setCommentsOpenFor(null)}
-                    currentUser={user}
-                    onCommentAdded={() => handleCommentAdded(commentsOpenFor)}
-                    onCommentRemoved={() => handleCommentRemoved(commentsOpenFor)}
-                    takeToUserProfile={takeToUserProfile}
-                />
-            )}
 
             {/* Likes modal */}
             <LikesModal postId={likesOpenFor} open={!!likesOpenFor} onClose={() => setLikesOpenFor(null)} takeToUserProfile={takeToUserProfile} />

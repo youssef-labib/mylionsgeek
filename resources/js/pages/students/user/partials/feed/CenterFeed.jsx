@@ -1,12 +1,45 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Link } from '@inertiajs/react';
 import { Image } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CreatePostModal from '../../../../../components/post/CreatePostModal';
 import PostCard from '../../../../../components/post/PostCard';
 
+function parseFeedPostIdFromHash() {
+    const raw = window.location.hash.replace(/^#/, '');
+    if (!raw) {
+        return null;
+    }
+    if (raw.startsWith('post-')) {
+        const id = parseInt(raw.slice('post-'.length), 10);
+        return Number.isNaN(id) ? null : id;
+    }
+    if (/^\d+$/.test(raw)) {
+        const id = parseInt(raw, 10);
+        return Number.isNaN(id) ? null : id;
+    }
+    return null;
+}
+
 export default function CenterFeed({ user, posts }) {
     const [openAddPost, setOpenAddPost] = useState(false);
+    const [openModalPostIdFromHash, setOpenModalPostIdFromHash] = useState(null);
+
+    useEffect(() => {
+        const syncFromHash = () => {
+            setOpenModalPostIdFromHash(parseFeedPostIdFromHash());
+        };
+        syncFromHash();
+        window.addEventListener('hashchange', syncFromHash);
+        return () => window.removeEventListener('hashchange', syncFromHash);
+    }, []);
+
+    const clearFeedPostHash = useCallback(() => {
+        setOpenModalPostIdFromHash(null);
+        if (window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+    }, []);
     return (
         <>
             {/* Center Feed - Scrollable */}
@@ -51,7 +84,12 @@ export default function CenterFeed({ user, posts }) {
 
                 {/* Post Card */}
 
-                <PostCard user={user} posts={posts} />
+                <PostCard
+                    user={user}
+                    posts={posts}
+                    openModalPostId={openModalPostIdFromHash}
+                    onConsumedHashModal={clearFeedPostHash}
+                />
                 {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow"> */}
                 {/* Post Header */}
                 {/* <div className="p-4">
