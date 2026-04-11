@@ -49,11 +49,6 @@ export function AppHeader({ breadcrumbs = [] }) {
             url: '/students/projects',
             icon: Folder,
         },
-        // {
-        //     title: 'Games',
-        //     url: '/games',
-        //     icon: Gamepad2,
-        // },
     ];
     const getInitials = useInitials();
 
@@ -68,7 +63,7 @@ export function AppHeader({ breadcrumbs = [] }) {
     return (
         <>
             <div
-                className={`border-sidebar-border/80 ${auth.user.role.includes('student') && 'fixed'} z-30 mx-auto w-full border-b bg-light dark:bg-dark`}
+                className={`border-sidebar-border/80 ${(Array.isArray(auth.user.role) ? auth.user.role : [auth.user.role]).some((r) => ['student', 'coworker'].includes(r)) && 'fixed'} z-30 mx-auto w-full border-b bg-light dark:bg-dark`}
             >
                 <div className="mx-auto flex h-16 items-center justify-between px-4 md:max-w-7xl">
                     {/* Mobile Menu */}

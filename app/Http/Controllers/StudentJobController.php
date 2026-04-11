@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
@@ -59,7 +60,7 @@ class StudentJobController extends Controller
         ]);
     }
 
-    public function show(Job $job): Response
+    public function show(Request $request, Job $job): Response
     {
         if (! $job->is_published) {
             abort(404);
@@ -68,9 +69,68 @@ class StudentJobController extends Controller
             abort(404);
         }
 
+        $user = $request->user();
+        $roles = $user ? (is_array($user->role) ? $user->role : [$user->role]) : [];
+        $isStudent = in_array('student', $roles, true);
+        $hasApplied = $user && $isStudent
+            ? $job->applications()->where('user_id', $user->id)->exists()
+            : false;
+
+        $isManager = false;
+        $manage = null;
+        if ($user) {
+            $uid = (int) $user->id;
+            $isAdminCreator = $job->user_id !== null && (int) $job->user_id === $uid;
+            $isAssignedRecruiter = $job->recruiters()->where('users.id', $uid)->exists();
+            $isManager = $isAdminCreator || $isAssignedRecruiter;
+            if ($isAdminCreator) {
+                $manage = ['href' => '/admin/jobs', 'label' => 'Manage in admin'];
+            } elseif ($isAssignedRecruiter) {
+                $manage = ['href' => '/recruiter/jobs', 'label' => 'Open assigned jobs'];
+            }
+        }
+
         return Inertia::render('students/Jobs/partials/[id]', [
-            'job' => $this->serializeJobDetail($job),
+            'job' => $this->serializeJobDetail($job, $hasApplied, $isManager, $manage),
         ]);
+    }
+
+    public function apply(Request $request, Job $job): RedirectResponse
+    {
+        $user = $request->user();
+        $roles = is_array($user->role) ? $user->role : [$user->role];
+        if (! in_array('student', $roles, true)) {
+            abort(403);
+        }
+
+        if (! $job->is_published) {
+            abort(404);
+        }
+        if ($job->deadline && $job->deadline->isBefore(now()->startOfDay())) {
+            abort(404);
+        }
+        if ($job->user_id !== null && (int) $job->user_id === (int) $user->id) {
+            abort(403);
+        }
+        if ($job->recruiters()->where('users.id', $user->id)->exists()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'cover_letter' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        if ($job->applications()->where('user_id', $user->id)->exists()) {
+            return back()->with('error', __('You have already applied to this job.'));
+        }
+
+        $job->applications()->create([
+            'user_id' => $user->id,
+            'cover_letter' => $validated['cover_letter'] ?? null,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', __('Your application was submitted.'));
     }
 
     /**
@@ -98,7 +158,10 @@ class StudentJobController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function serializeJobDetail(Job $job): array
+    /**
+     * @param  array{href: string, label: string}|null  $manage
+     */
+    private function serializeJobDetail(Job $job, bool $hasApplied = false, bool $isManager = false, ?array $manage = null): array
     {
         return [
             'id' => $job->id,
@@ -110,6 +173,9 @@ class StudentJobController extends Controller
             'skills' => $job->skills ?? [],
             'deadline' => $job->deadline?->format('Y-m-d'),
             'created_at' => $job->created_at->toIso8601String(),
+            'has_applied' => $hasApplied,
+            'is_owner' => $isManager,
+            'manage' => $manage,
         ];
     }
 

@@ -1,9 +1,48 @@
 import { NavMain } from '@/components/nav-main';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/react';
-import { AwardIcon, Building2, Calendar, FolderOpen, GraduationCap, LayoutGrid, Monitor, Settings, Timer, Users, Wrench } from 'lucide-react';
+import {
+    AwardIcon,
+    Briefcase,
+    Building2,
+    Calendar,
+    ClipboardList,
+    FolderOpen,
+    GraduationCap,
+    LayoutGrid,
+    Monitor,
+    Settings,
+    Timer,
+    UserPlus,
+    Users,
+    Wrench,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
+
+const getRecruiterNavItems = () => [
+    {
+        id: 'recruiter_jobs',
+        title: 'Assigned jobs',
+        href: '/recruiter/jobs',
+        icon: Briefcase,
+        authorizedRoles: ['recruiter'],
+    },
+    {
+        id: 'recruiter_applications',
+        title: 'Applications',
+        href: '/recruiter/applications',
+        icon: ClipboardList,
+        authorizedRoles: ['recruiter'],
+    },
+    {
+        id: 'recruiter_settings',
+        title: 'Settings',
+        href: '/settings',
+        icon: Settings,
+        authorizedRoles: ['recruiter'],
+    },
+];
 
 const getAllNavItems = () => [
     {
@@ -19,6 +58,21 @@ const getAllNavItems = () => [
         href: '/admin/users',
         icon: Users,
         excludedRoles: ['studio_responsable'],
+    },
+
+    {
+        id: 'jobs',
+        title: 'Jobs',
+        href: '/admin/jobs',
+        icon: Briefcase,
+        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
+    },
+    {
+        id: 'recruiters',
+        title: 'Recruiters',
+        href: '/admin/recruiters',
+        icon: UserPlus,
+        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
     },
 
     {
@@ -85,8 +139,18 @@ export function AppSidebar() {
     const { auth } = usePage().props;
     const user = auth?.user;
 
+    const userRoles = Array.isArray(user?.role) ? user.role : user?.role ? [user.role] : [];
+    const isStaff = userRoles.some((r) => ['admin', 'moderateur', 'studio_responsable', 'coach', 'super_admin'].includes(r));
+    const isRecruiterOnlySidebar = userRoles.includes('recruiter') && !isStaff;
+
+    const logoHref = isRecruiterOnlySidebar ? '/recruiter/jobs' : '/admin/dashboard';
+
     // Filter nav items based on user permissions
     const mainNavItems = useMemo(() => {
+        if (isRecruiterOnlySidebar) {
+            return getRecruiterNavItems();
+        }
+
         const allItems = getAllNavItems();
 
         return allItems.filter((item) => {
@@ -96,7 +160,7 @@ export function AppSidebar() {
             }
             return true;
         });
-    }, [user]);
+    }, [user, isRecruiterOnlySidebar]);
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -104,7 +168,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={'/admin/dashboard'} prefetch>
+                            <Link href={logoHref} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

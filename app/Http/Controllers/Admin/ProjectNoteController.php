@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProjectNote;
-use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +19,7 @@ class ProjectNoteController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'tags' => 'nullable|array',
-            'is_pinned' => 'boolean'
+            'is_pinned' => 'boolean',
         ]);
 
         $data = $request->all();
@@ -43,7 +42,7 @@ class ProjectNoteController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'tags' => 'nullable|array',
-            'is_pinned' => 'boolean'
+            'is_pinned' => 'boolean',
         ]);
 
         $data = $request->all();
@@ -71,7 +70,7 @@ class ProjectNoteController extends Controller
      */
     public function togglePin(ProjectNote $projectNote)
     {
-        $projectNote->update(['is_pinned' => !$projectNote->is_pinned]);
+        $projectNote->update(['is_pinned' => ! $projectNote->is_pinned]);
 
         return redirect()->back()
             ->with('success', $projectNote->is_pinned ? 'Note pinned successfully.' : 'Note unpinned successfully.');

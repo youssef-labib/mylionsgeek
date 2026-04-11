@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Attachment;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
@@ -19,7 +19,7 @@ class AttachmentController extends Controller
         $request->validate([
             'file' => 'required|file|max:10240', // 10MB max
             'project_id' => 'required|exists:projects,id',
-            'task_id' => 'nullable|exists:tasks,id'
+            'task_id' => 'nullable|exists:tasks,id',
         ]);
 
         $file = $request->file('file');
@@ -33,14 +33,14 @@ class AttachmentController extends Controller
             'size' => $file->getSize(),
             'project_id' => $request->project_id,
             'task_id' => $request->task_id,
-            'uploaded_by' => Auth::id()
+            'uploaded_by' => Auth::id(),
         ]);
 
         // Update project last activity
         $project = Project::find($request->project_id);
         $project->update([
             'last_activity' => now(),
-            'is_updated' => true
+            'is_updated' => true,
         ]);
 
         return redirect()->back()

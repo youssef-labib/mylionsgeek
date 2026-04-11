@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\TaskComment;
 use App\Models\Task;
+use App\Models\TaskComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,20 +17,20 @@ class TaskCommentController extends Controller
     {
         $request->validate([
             'content' => 'required|string|max:1000',
-            'task_id' => 'required|exists:tasks,id'
+            'task_id' => 'required|exists:tasks,id',
         ]);
 
         $comment = TaskComment::create([
             'content' => $request->content,
             'task_id' => $request->task_id,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
         ]);
 
         // Update project last activity
         $task = Task::find($request->task_id);
         $task->project->update([
             'last_activity' => now(),
-            'is_updated' => true
+            'is_updated' => true,
         ]);
 
         return redirect()->back()

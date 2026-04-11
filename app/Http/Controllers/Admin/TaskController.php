@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Ably\AblyRest;
 use App\Http\Controllers\Controller;
-use App\Models\Task;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\TaskAssignmentNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Ably\AblyRest;
 
 class TaskController extends Controller
 {
@@ -32,7 +32,7 @@ class TaskController extends Controller
                 'due_date' => 'nullable|date',
                 'subtasks' => 'nullable|array',
                 'tags' => 'nullable|array',
-                'progress' => 'nullable|integer|min:0|max:100'
+                'progress' => 'nullable|integer|min:0|max:100',
             ]);
 
             $data = $request->all();
@@ -57,13 +57,13 @@ class TaskController extends Controller
             DB::statement('PRAGMA foreign_keys=ON');
 
             // Create notification if task is assigned to a user
-            $assignedTo = $task->assigned_to ? (int)$task->assigned_to : null;
-            $currentUserId = (int)Auth::id();
+            $assignedTo = $task->assigned_to ? (int) $task->assigned_to : null;
+            $currentUserId = (int) Auth::id();
             if ($assignedTo) {
                 Log::info('Creating task assignment notification on create', [
                     'task_id' => $task->id,
                     'assigned_to' => $assignedTo,
-                    'assigned_by' => $currentUserId
+                    'assigned_by' => $currentUserId,
                 ]);
                 $this->createTaskAssignmentNotification($task, $assignedTo, $currentUserId);
             }
@@ -72,14 +72,14 @@ class TaskController extends Controller
             $project = Project::find($request->project_id);
             $project->update([
                 'last_activity' => now(),
-                'is_updated' => true
+                'is_updated' => true,
             ]);
 
             return redirect()->back()
                 ->with('success', 'Task created successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to create task: ' . $e->getMessage());
+                ->with('error', 'Failed to create task: '.$e->getMessage());
         }
     }
 
@@ -100,18 +100,18 @@ class TaskController extends Controller
                 'tags' => 'nullable|array',
                 'progress' => 'nullable|integer|min:0|max:100',
                 'is_pinned' => 'nullable|boolean',
-                'is_editable' => 'nullable|boolean'
+                'is_editable' => 'nullable|boolean',
             ]);
 
             $data = $request->all();
 
             // Handle status changes
             if (isset($data['status'])) {
-                if ($data['status'] === 'in_progress' && !$task->started_at) {
+                if ($data['status'] === 'in_progress' && ! $task->started_at) {
                     $data['started_at'] = now();
                 }
 
-                if ($data['status'] === 'completed' && !$task->completed_at) {
+                if ($data['status'] === 'completed' && ! $task->completed_at) {
                     $data['completed_at'] = now();
                     $data['progress'] = 100;
                 }
@@ -123,15 +123,15 @@ class TaskController extends Controller
             }
 
             // Check if assigned_to is being changed
-            $oldAssignedTo = $task->assigned_to ? (int)$task->assigned_to : null;
-            $newAssignedTo = isset($data['assigned_to']) ? ($data['assigned_to'] ? (int)$data['assigned_to'] : null) : $oldAssignedTo;
-            $currentUserId = (int)Auth::id();
+            $oldAssignedTo = $task->assigned_to ? (int) $task->assigned_to : null;
+            $newAssignedTo = isset($data['assigned_to']) ? ($data['assigned_to'] ? (int) $data['assigned_to'] : null) : $oldAssignedTo;
+            $currentUserId = (int) Auth::id();
 
             // Temporarily disable foreign key checks for SQLite
             DB::statement('PRAGMA foreign_keys=OFF');
 
             $task->update($data);
-            
+
             // Refresh task to get updated data
             $task->refresh();
 
@@ -144,7 +144,7 @@ class TaskController extends Controller
                     'task_id' => $task->id,
                     'assigned_to' => $newAssignedTo,
                     'assigned_by' => $currentUserId,
-                    'old_assigned_to' => $oldAssignedTo
+                    'old_assigned_to' => $oldAssignedTo,
                 ]);
                 $this->createTaskAssignmentNotification($task, $newAssignedTo, $currentUserId);
             }
@@ -152,14 +152,14 @@ class TaskController extends Controller
             // Update project last activity
             $task->project->update([
                 'last_activity' => now(),
-                'is_updated' => true
+                'is_updated' => true,
             ]);
 
             return redirect()->back()
                 ->with('success', 'Task updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to update task: ' . $e->getMessage());
+                ->with('error', 'Failed to update task: '.$e->getMessage());
         }
     }
 
@@ -181,7 +181,7 @@ class TaskController extends Controller
                 ->with('success', 'Task deleted successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to delete task: ' . $e->getMessage());
+                ->with('error', 'Failed to delete task: '.$e->getMessage());
         }
     }
 
@@ -192,12 +192,12 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'status' => 'required|in:todo,in_progress,review,completed'
+                'status' => 'required|in:todo,in_progress,review,completed',
             ]);
 
             if ($request->status === 'completed') {
                 $subtasks = $task->subtasks ?? [];
-                $hasIncompleteSubtasks = collect($subtasks)->contains(fn($subtask) => !($subtask['completed'] ?? false));
+                $hasIncompleteSubtasks = collect($subtasks)->contains(fn ($subtask) => ! ($subtask['completed'] ?? false));
 
                 if ($hasIncompleteSubtasks) {
                     return back()->withErrors(['message' => 'Cannot mark task as complete. Please complete all subtasks first.']);
@@ -207,11 +207,11 @@ class TaskController extends Controller
             $data = ['status' => $request->status];
 
             // Handle status changes
-            if ($request->status === 'in_progress' && !$task->started_at) {
+            if ($request->status === 'in_progress' && ! $task->started_at) {
                 $data['started_at'] = now();
             }
 
-            if ($request->status === 'completed' && !$task->completed_at) {
+            if ($request->status === 'completed' && ! $task->completed_at) {
                 $data['completed_at'] = now();
                 $data['progress'] = 100;
             }
@@ -226,7 +226,7 @@ class TaskController extends Controller
 
             return back()->with(['success' => true, 'message' => 'Task status updated successfully!']);
         } catch (\Exception $e) {
-            return back()->with(['success' => false, 'message' => 'Failed to update task status: ' . $e->getMessage()], 500);
+            return back()->with(['success' => false, 'message' => 'Failed to update task status: '.$e->getMessage()], 500);
         }
     }
 
@@ -237,7 +237,7 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'completed' => 'boolean'
+            'completed' => 'boolean',
         ]);
 
         $subtasks = $task->subtasks ?? [];
@@ -245,7 +245,7 @@ class TaskController extends Controller
             'id' => uniqid(),
             'title' => $request->title,
             'completed' => $request->completed ?? false,
-            'created_at' => now()->toISOString()
+            'created_at' => now()->toISOString(),
         ];
 
         $task->update(['subtasks' => $subtasks]);
@@ -262,7 +262,7 @@ class TaskController extends Controller
         $request->validate([
             'subtask_id' => 'required|string',
             'title' => 'nullable|string|max:255',
-            'completed' => 'nullable|boolean'
+            'completed' => 'nullable|boolean',
         ]);
 
         $subtasks = $task->subtasks ?? [];
@@ -299,18 +299,17 @@ class TaskController extends Controller
     public function deleteSubtask(Request $request, Task $task)
     {
         $request->validate([
-            'subtask_id' => 'required|string'
+            'subtask_id' => 'required|string',
         ]);
 
         $subtasks = $task->subtasks ?? [];
-        $subtasks = array_filter($subtasks, fn($subtask) => $subtask['id'] !== $request->subtask_id);
+        $subtasks = array_filter($subtasks, fn ($subtask) => $subtask['id'] !== $request->subtask_id);
 
         $task->update(['subtasks' => array_values($subtasks)]);
 
         return redirect()->back()
             ->with('success', 'Subtask deleted successfully.');
     }
-
 
     /**
      * Toggle task pin status
@@ -321,7 +320,7 @@ class TaskController extends Controller
             // Temporarily disable foreign key checks for SQLite
             DB::statement('PRAGMA foreign_keys=OFF');
 
-            $task->update(['is_pinned' => !$task->is_pinned]);
+            $task->update(['is_pinned' => ! $task->is_pinned]);
 
             // Re-enable foreign key checks
             DB::statement('PRAGMA foreign_keys=ON');
@@ -330,7 +329,7 @@ class TaskController extends Controller
                 ->with('success', $task->is_pinned ? 'Task pinned successfully!' : 'Task unpinned successfully!');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to toggle task pin: ' . $e->getMessage());
+                ->with('error', 'Failed to toggle task pin: '.$e->getMessage());
         }
     }
 
@@ -341,7 +340,7 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'title' => 'required|string|max:255'
+                'title' => 'required|string|max:255',
             ]);
 
             // Temporarily disable foreign key checks for SQLite
@@ -354,7 +353,7 @@ class TaskController extends Controller
 
             return back()->with('success', 'Task title updated successfully!');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update task title: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update task title: '.$e->getMessage()], 500);
         }
     }
 
@@ -365,7 +364,7 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'description' => 'nullable|string'
+                'description' => 'nullable|string',
             ]);
 
             // Temporarily disable foreign key checks for SQLite
@@ -378,7 +377,7 @@ class TaskController extends Controller
 
             return redirect()->back()->with('success', 'Task description updated successfully!');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update task description: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update task description: '.$e->getMessage()], 500);
         }
     }
 
@@ -389,7 +388,7 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'priority' => 'required|in:low,medium,high,urgent'
+                'priority' => 'required|in:low,medium,high,urgent',
             ]);
 
             // Temporarily disable foreign key checks for SQLite
@@ -402,7 +401,7 @@ class TaskController extends Controller
 
             return redirect()->back()->with('success', 'Task priority updated successfully!');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update task priority: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update task priority: '.$e->getMessage()], 500);
         }
     }
 
@@ -414,11 +413,11 @@ class TaskController extends Controller
         try {
             $request->validate([
                 'file' => 'required|file|max:10240', // 10MB max
-                'name' => 'nullable|string|max:255'
+                'name' => 'nullable|string|max:255',
             ]);
 
             $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $path = $file->storeAs('task-attachments', $filename, 'public');
 
             $attachments = $task->attachments ?? [];
@@ -429,7 +428,7 @@ class TaskController extends Controller
                 'size' => $file->getSize(),
                 'type' => $file->getMimeType(),
                 'uploaded_by' => Auth::id(),
-                'uploaded_at' => now()->toISOString()
+                'uploaded_at' => now()->toISOString(),
             ];
 
             $task->update(['attachments' => $attachments]);
@@ -438,7 +437,7 @@ class TaskController extends Controller
                 ->with('success', 'Attachment added successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to upload attachment: ' . $e->getMessage());
+                ->with('error', 'Failed to upload attachment: '.$e->getMessage());
         }
     }
 
@@ -449,11 +448,11 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'attachment_id' => 'required|string'
+                'attachment_id' => 'required|string',
             ]);
 
             $attachments = $task->attachments ?? [];
-            $attachments = array_filter($attachments, fn($attachment) => $attachment['id'] !== $request->attachment_id);
+            $attachments = array_filter($attachments, fn ($attachment) => $attachment['id'] !== $request->attachment_id);
 
             $task->update(['attachments' => array_values($attachments)]);
 
@@ -461,7 +460,7 @@ class TaskController extends Controller
                 ->with('success', 'Attachment removed successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to remove attachment: ' . $e->getMessage());
+                ->with('error', 'Failed to remove attachment: '.$e->getMessage());
         }
     }
 
@@ -472,22 +471,22 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'assigned_to' => 'nullable|exists:users,id'
+                'assigned_to' => 'nullable|exists:users,id',
             ]);
 
             $assignedTo = $request->assigned_to ?? null;
             $oldAssignedTo = $task->assigned_to;
-            
+
             // Convert to integers for proper comparison
-            $assignedTo = $assignedTo ? (int)$assignedTo : null;
-            $oldAssignedTo = $oldAssignedTo ? (int)$oldAssignedTo : null;
-            $currentUserId = (int)Auth::id();
+            $assignedTo = $assignedTo ? (int) $assignedTo : null;
+            $oldAssignedTo = $oldAssignedTo ? (int) $oldAssignedTo : null;
+            $currentUserId = (int) Auth::id();
 
             // Temporarily disable foreign key checks for SQLite
             DB::statement('PRAGMA foreign_keys=OFF');
 
             $task->update(['assigned_to' => $assignedTo]);
-            
+
             // Refresh task to get updated data
             $task->refresh();
 
@@ -500,7 +499,7 @@ class TaskController extends Controller
                     'task_id' => $task->id,
                     'assigned_to' => $assignedTo,
                     'assigned_by' => $currentUserId,
-                    'old_assigned_to' => $oldAssignedTo
+                    'old_assigned_to' => $oldAssignedTo,
                 ]);
                 $this->createTaskAssignmentNotification($task, $assignedTo, $currentUserId);
             } else {
@@ -509,7 +508,7 @@ class TaskController extends Controller
                     'assigned_to' => $assignedTo,
                     'old_assigned_to' => $oldAssignedTo,
                     'current_user_id' => $currentUserId,
-                    'reason' => $assignedTo === $oldAssignedTo ? 'Assignment unchanged' : 'No assignment'
+                    'reason' => $assignedTo === $oldAssignedTo ? 'Assignment unchanged' : 'No assignment',
                 ]);
             }
 
@@ -517,11 +516,10 @@ class TaskController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
-
 
     /**
      * Add comment to task
@@ -530,7 +528,7 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'content' => 'required|string|max:1000'
+                'content' => 'required|string|max:1000',
             ]);
 
             $comments = $task->comments ?? [];
@@ -539,7 +537,7 @@ class TaskController extends Controller
                 'content' => $request->content,
                 'user_id' => Auth::id(),
                 'user' => Auth::user()->only('id', 'name', 'email', 'image'),
-                'created_at' => now()->toISOString()
+                'created_at' => now()->toISOString(),
             ];
 
             $task->update(['comments' => $comments]);
@@ -548,7 +546,7 @@ class TaskController extends Controller
                 ->with('success', 'Comment added successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to add comment: ' . $e->getMessage());
+                ->with('error', 'Failed to add comment: '.$e->getMessage());
         }
     }
 
@@ -559,7 +557,7 @@ class TaskController extends Controller
     {
         try {
             $request->validate([
-                'content' => 'required|string|max:1000'
+                'content' => 'required|string|max:1000',
             ]);
 
             $comments = $task->comments ?? [];
@@ -578,7 +576,7 @@ class TaskController extends Controller
                 ->with('error', 'Comment not found.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to update comment: ' . $e->getMessage());
+                ->with('error', 'Failed to update comment: '.$e->getMessage());
         }
     }
 
@@ -603,7 +601,7 @@ class TaskController extends Controller
                 ->with('error', 'Comment not found.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to delete comment: ' . $e->getMessage());
+                ->with('error', 'Failed to delete comment: '.$e->getMessage());
         }
     }
 
@@ -616,19 +614,21 @@ class TaskController extends Controller
             $assignedToUser = User::find($assignedToUserId);
             $assignedByUser = User::find($assignedByUserId);
 
-            if (!$assignedToUser) {
+            if (! $assignedToUser) {
                 Log::warning('Cannot create task assignment notification: assigned_to_user not found', [
                     'assigned_to_user_id' => $assignedToUserId,
-                    'task_id' => $task->id
+                    'task_id' => $task->id,
                 ]);
+
                 return;
             }
 
-            if (!$assignedByUser) {
+            if (! $assignedByUser) {
                 Log::warning('Cannot create task assignment notification: assigned_by_user not found', [
                     'assigned_by_user_id' => $assignedByUserId,
-                    'task_id' => $task->id
+                    'task_id' => $task->id,
                 ]);
+
                 return;
             }
 
@@ -653,7 +653,7 @@ class TaskController extends Controller
                 'notification_id' => $notification->id,
                 'task_id' => $task->id,
                 'assigned_to_user_id' => $assignedToUserId,
-                'assigned_by_user_id' => $assignedByUserId
+                'assigned_by_user_id' => $assignedByUserId,
             ]);
 
             // Send Expo push notification
@@ -672,7 +672,7 @@ class TaskController extends Controller
                         'assigned_by_user_id' => $assignedByUserId,
                         'assigned_by_name' => $assignedByUser->name,
                     ]);
-                    if (!$success) {
+                    if (! $success) {
                         Log::warning('Push notification send returned false for task assignment');
                     }
                 }
@@ -690,9 +690,9 @@ class TaskController extends Controller
                 if ($ablyKey) {
                     $ably = new AblyRest($ablyKey);
                     $channel = $ably->channels->get("notifications:{$assignedToUserId}");
-                    
+
                     $channel->publish('new_notification', [
-                        'id' => 'task-assignment-' . $notification->id,
+                        'id' => 'task-assignment-'.$notification->id,
                         'type' => 'task_assignment',
                         'sender_name' => $assignedByUser->name,
                         'sender_image' => $assignedByUser->image,
@@ -702,10 +702,10 @@ class TaskController extends Controller
                         'created_at' => $notification->created_at->format('Y-m-d H:i:s'),
                         'read_at' => null,
                     ]);
-                    
+
                     Log::info('Task assignment notification broadcasted via Ably', [
                         'notification_id' => $notification->id,
-                        'channel' => "notifications:{$assignedToUserId}"
+                        'channel' => "notifications:{$assignedToUserId}",
                     ]);
                 } else {
                     Log::warning('Ably key not configured, skipping real-time broadcast');
@@ -714,7 +714,7 @@ class TaskController extends Controller
                 Log::error('Failed to broadcast task assignment notification via Ably', [
                     'error' => $e->getMessage(),
                     'notification_id' => $notification->id ?? null,
-                    'trace' => $e->getTraceAsString()
+                    'trace' => $e->getTraceAsString(),
                 ]);
             }
         } catch (\Exception $e) {
@@ -723,7 +723,7 @@ class TaskController extends Controller
                 'task_id' => $task->id ?? null,
                 'assigned_to_user_id' => $assignedToUserId ?? null,
                 'assigned_by_user_id' => $assignedByUserId ?? null,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }

@@ -1,24 +1,33 @@
 <?php
 
-use App\Models\Note;
-use App\Models\Formation;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
-use App\Jobs\CreateInvitedUser;
-use App\Models\User;
-use App\Http\Controllers\UserProjectController;
-use App\Http\Controllers\Admin\GlobalAnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\AdminProjectController;
-use App\Http\Controllers\ReservationsController;
+use App\Http\Controllers\Admin\GlobalAnalyticsController;
 use App\Http\Controllers\API\SearchController as ApiSearchController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReservationsController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        $user = Auth::user();
+        $roles = is_array($user->role) ? $user->role : [$user->role];
+        $staffForAdminDashboard = array_intersect($roles, ['admin', 'moderateur', 'coach', 'studio_responsable']);
+        if ($staffForAdminDashboard !== []) {
+            return redirect()->route('dashboard');
+        }
+        if (in_array('student', $roles, true)) {
+            return redirect()->route('student.feed');
+        }
+        if (in_array('recruiter', $roles, true)) {
+            return redirect()->route('recruiter.jobs.index');
+        }
+
+        return redirect()->route('profile.edit');
     }
+
     return Inertia::render('Welcome/index');
 })->name('home');
 
@@ -154,7 +163,7 @@ Route::middleware(['auth'])->group(function () {
     // Notifications API - Legacy endpoint for pending reservations
     Route::get('/api/notifications/pending-reservations', function (Request $request) {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return response()->json(['pending_reservations' => []]);
         }
 
@@ -162,7 +171,7 @@ Route::middleware(['auth'])->group(function () {
         $isAdmin = in_array('admin', $roles);
         $isStudioResponsable = in_array('studio_responsable', $roles);
 
-        if (!$isAdmin && !$isStudioResponsable) {
+        if (! $isAdmin && ! $isStudioResponsable) {
             return response()->json(['pending_reservations' => []]);
         }
 
@@ -202,7 +211,8 @@ Route::middleware(['auth'])->group(function () {
 
             return response()->json(['pending_reservations' => $pendingReservations]);
         } catch (\Exception $e) {
-            \Log::error('Failed to fetch pending reservations: ' . $e->getMessage());
+            \Log::error('Failed to fetch pending reservations: '.$e->getMessage());
+
             return response()->json(['pending_reservations' => []], 500);
         }
     })->name('api.notifications.pending-reservations');
@@ -215,7 +225,6 @@ Route::get('/appointments/{token}/suggest', [ReservationsController::class, 'sho
 Route::post('/appointments/{token}/suggest', [ReservationsController::class, 'submitAppointmentSuggestForm'])->name('appointments.suggest.submit');
 Route::get('/appointments/suggest/{token}/accept', [ReservationsController::class, 'acceptSuggestedTime'])->name('appointments.suggest.accept');
 
-
 // Notifications API Routes
 // These routes work for both web (auth middleware) and mobile API (auth:sanctum middleware)
 // Using auth:sanctum which supports both web sessions and API tokens
@@ -226,25 +235,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/api/notifications/ably-token', [NotificationController::class, 'getAblyToken'])->name('api.notifications.ably-token');
 });
 
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
-require __DIR__ . '/admin/users.php';
-require __DIR__ . '/admin/computers.php';
-require __DIR__ . '/admin/leaderboard.php';
-require __DIR__ . '/admin/training.php';
-require __DIR__ . '/admin/courses.php';
-require __DIR__ . '/admin/exercices.php';
-require __DIR__ . '/admin/geeko.php';
-require __DIR__ . '/admin/equipment.php';
-require __DIR__ . '/admin/places.php';
-require __DIR__ . '/admin/reservations.php';
-require __DIR__ . '/admin/projects.php';
-require __DIR__ . '/admin/recuiter.php';
-require __DIR__ . '/admin/games.php';
-require __DIR__ . '/students/exercises.php';
-require __DIR__ . '/students/students.php';
-require __DIR__ . '/studentProjects.php';
-require __DIR__ . '/admin/project-approvals.php';
-require __DIR__ . '/students/posts.php';
-require __DIR__ . '/chat.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
+require __DIR__.'/admin/users.php';
+require __DIR__.'/admin/computers.php';
+require __DIR__.'/admin/leaderboard.php';
+require __DIR__.'/admin/training.php';
+require __DIR__.'/admin/courses.php';
+require __DIR__.'/admin/exercices.php';
+require __DIR__.'/admin/geeko.php';
+require __DIR__.'/admin/equipment.php';
+require __DIR__.'/admin/places.php';
+require __DIR__.'/admin/reservations.php';
+require __DIR__.'/admin/projects.php';
+require __DIR__.'/admin/recruitment.php';
+require __DIR__.'/admin/games.php';
+require __DIR__.'/students/exercises.php';
+require __DIR__.'/students/students.php';
+require __DIR__.'/recruiter.php';
+require __DIR__.'/studentProjects.php';
+require __DIR__.'/admin/project-approvals.php';
+require __DIR__.'/students/posts.php';
+require __DIR__.'/chat.php';

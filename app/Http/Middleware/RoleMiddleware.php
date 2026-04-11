@@ -29,18 +29,20 @@ class RoleMiddleware
         $userRoles = is_array($user->role) ? $user->role : [$user->role];
 
         // Check if user has at least one allowed role
-        $hasAccess = !empty(array_intersect($allowedRoles, $userRoles));
+        $hasAccess = ! empty(array_intersect($allowedRoles, $userRoles));
 
         if (! $hasAccess) {
-            // Redirect user to their own dashboard based on role
             if (in_array('student', $userRoles)) {
                 return redirect()->route('student.feed');
-            } elseif (in_array('admin', $userRoles)) {
+            }
+            if (in_array('admin', $userRoles)) {
                 return redirect()->route('dashboard');
             }
+            if (in_array('recruiter', $userRoles)) {
+                return redirect()->route('recruiter.jobs.index');
+            }
 
-            // Fallback if role is unknown
-            return redirect('/');
+            return redirect()->route('profile.edit');
         }
 
         return $next($request);

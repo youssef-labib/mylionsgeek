@@ -12,6 +12,9 @@ import { Home } from 'lucide-react';
 
 export function AppSidebarHeader({ breadcrumbs = [] }) {
     const { auth } = usePage().props;
+    const userRoles = Array.isArray(auth?.user?.role) ? auth.user.role : [auth?.user?.role];
+    const isRecruiter = userRoles.includes('recruiter');
+    const homeHref = isRecruiter ? '/recruiter/jobs' : '/students/feed';
     const [now, setNow] = useState(new Date());
 
     useEffect(() => {
@@ -33,11 +36,11 @@ export function AppSidebarHeader({ breadcrumbs = [] }) {
                     <span className="text-xl font-semibold tracking-tight text-foreground">{hours}</span>
                     <span className="text-sm text-muted-foreground">{dateStr}</span>
                 </div>
-                <SearchDialog className="hidden sm:flex" />
+                {!isRecruiter && <SearchDialog className="hidden sm:flex" />}
                 <div className="flex items-center gap-4">
                     <ChatIcon />
                     <NotificationIcon />
-                    <Link href="/students/feed" prefetch className="flex items-center">
+                    <Link href={homeHref} prefetch className="flex items-center">
                         <Button variant="ghost" size="icon" className="flex h-9 w-9 items-center justify-center rounded-md" aria-label="Home">
                             <Home className="h-5 w-5 flex-shrink-0" />
                         </Button>

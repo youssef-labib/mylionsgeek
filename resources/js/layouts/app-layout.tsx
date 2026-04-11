@@ -16,26 +16,22 @@ export default function AppLayout({ children, breadcrumbs, ...props }: AppLayout
     // Always treat roles as an array
     const userRoles: string[] = Array.isArray(auth?.user?.role) ? auth.user.role : [auth?.user?.role];
 
-    // If the user has 'admin' or 'studio_responsable', show sidebar (even if they are also 'coach')
-    const isAdmin =
-        userRoles.includes('admin') || userRoles.includes('moderateur') || userRoles.includes('studio_responsable') || userRoles.includes('coach');
+    const isRecruiter = userRoles.includes('recruiter');
+    const isStaff = userRoles.some((role) =>
+        ['admin', 'moderateur', 'studio_responsable', 'coach', 'super_admin'].includes(role),
+    );
+    const useSidebarLayout = isRecruiter || isStaff;
 
-    // Show header only for students/coworkers without admin
-    const isStudentOrCoworker = !isAdmin && userRoles.some((role) => ['student', 'coworker'].includes(role));
+    const Layout = useSidebarLayout ? AppSidebarLayout : AppHeaderLayout;
 
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    const isStudentRoute =
-        currentPath.startsWith('/feed') ||
-        currentPath.startsWith('/games') ||
-        currentPath.startsWith('/game') ||
-        currentPath.startsWith('/student') ||
-        currentPath.startsWith('/students');
-
-    const Layout = isStudentOrCoworker || isStudentRoute ? AppHeaderLayout : isAdmin ? AppSidebarLayout : AppHeaderLayout;
+    const needsStudentHeaderOffset =
+        !useSidebarLayout && userRoles.some((r) => ['student', 'coworker'].includes(r));
 
     return (
         <Layout breadcrumbs={breadcrumbs} {...props}>
-            <div className={`bg-light dark:bg-dark ${userRoles.includes('student') && 'pt-20'} mx-auto my-6 h-full w-[96%] rounded-lg shadow-lg`}>
+            <div
+                className={`bg-light dark:bg-dark ${needsStudentHeaderOffset ? 'pt-20' : ''} mx-auto my-6 h-full w-[96%] rounded-lg shadow-lg`}
+            >
                 <ShowSkippableModal />
                 {children}
             </div>

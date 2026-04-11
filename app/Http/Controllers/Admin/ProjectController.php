@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Project;
-use App\Models\User;
-use App\Models\Task;
-use App\Models\Attachment;
-use App\Models\ProjectInvitation;
-use App\Models\ProjectUser;
-use App\Models\ProjectMessage;
-use App\Models\ProjectMessageReaction;
-use App\Models\ProjectMessageNotification;
-use App\Mail\ProjectInvitationMail;
 use Ably\AblyRest;
+use App\Http\Controllers\Controller;
+use App\Mail\ProjectInvitationMail;
+use App\Models\Attachment;
+use App\Models\Project;
+use App\Models\ProjectInvitation;
+use App\Models\ProjectMessage;
+use App\Models\ProjectMessageNotification;
+use App\Models\ProjectMessageReaction;
+use App\Models\ProjectUser;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -49,8 +48,8 @@ class ProjectController extends Controller
         if ($request->has('search') && $request->search) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
+                $q->where('name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('description', 'like', '%'.$searchTerm.'%');
             });
         }
 
@@ -92,8 +91,8 @@ class ProjectController extends Controller
             'users' => $users,
             'flash' => [
                 'success' => session('success'),
-                'error' => session('error')
-            ]
+                'error' => session('error'),
+            ],
         ]);
     }
 
@@ -109,7 +108,7 @@ class ProjectController extends Controller
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date|after:start_date',
-                'status' => 'nullable|in:active,completed,on_hold,cancelled'
+                'status' => 'nullable|in:active,completed,on_hold,cancelled',
             ]);
 
             $data = $request->all();
@@ -132,7 +131,7 @@ class ProjectController extends Controller
                 'role' => 'owner',
                 'joined_at' => now(),
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
 
             // Re-enable foreign key checks
@@ -143,10 +142,10 @@ class ProjectController extends Controller
                 $predefinedTasks = $request->predefined_tasks;
 
                 // Handle different input types: string (JSON), array, or null/empty
-                if (is_string($predefinedTasks) && !empty($predefinedTasks)) {
+                if (is_string($predefinedTasks) && ! empty($predefinedTasks)) {
                     $decoded = json_decode($predefinedTasks, true);
                     $predefinedTasks = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [];
-                } elseif (!is_array($predefinedTasks)) {
+                } elseif (! is_array($predefinedTasks)) {
                     $predefinedTasks = [];
                 }
 
@@ -156,7 +155,7 @@ class ProjectController extends Controller
                     $taskTitles = [
                         'creation_du_site_web' => 'Creation du site web',
                         'creation_de_contenue_reseaux_sociaux' => 'Creation de contenue sur les reseau sociaux',
-                        'shooting_images_videos' => 'Shooting and images and videos'
+                        'shooting_images_videos' => 'Shooting and images and videos',
                     ];
 
                     // Temporarily disable foreign key checks for SQLite
@@ -172,7 +171,7 @@ class ProjectController extends Controller
                                 'priority' => 'medium',
                                 'status' => 'todo',
                                 'progress' => 0,
-                                'sort_order' => 0
+                                'sort_order' => 0,
                             ]);
                         }
                     }
@@ -185,9 +184,10 @@ class ProjectController extends Controller
             return redirect()->route('admin.projects.index')
                 ->with('success', 'Project created successfully.');
         } catch (\Exception $e) {
-            Log::error('Project creation failed: ' . $e->getMessage());
+            Log::error('Project creation failed: '.$e->getMessage());
+
             return redirect()->route('admin.projects.index')
-                ->with('error', 'Failed to create project: ' . $e->getMessage());
+                ->with('error', 'Failed to create project: '.$e->getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ class ProjectController extends Controller
             ->where('user_id', $userId)
             ->exists();
 
-        if (!$isOwner && !$isTeamMember) {
+        if (! $isOwner && ! $isTeamMember) {
             abort(403, 'You do not have access to this project.');
         }
 
@@ -213,7 +213,7 @@ class ProjectController extends Controller
             'users',
             'tasks.assignedTo',
             'tasks.creator',
-            'attachments.uploader'
+            'attachments.uploader',
         ]);
 
         $teamMembers = ProjectUser::with('user')
@@ -260,7 +260,7 @@ class ProjectController extends Controller
             'notes' => $notes,
             'currentUserProjectRole' => $currentUserProjectRole ? $currentUserProjectRole->role : null,
             'canManageTeam' => $canManageTeam,
-            'isProjectOwner' => $isOwner
+            'isProjectOwner' => $isOwner,
         ]);
     }
 
@@ -276,7 +276,7 @@ class ProjectController extends Controller
             ->where('user_id', $userId)
             ->exists();
 
-        if (!$isOwner && !$isTeamMember) {
+        if (! $isOwner && ! $isTeamMember) {
             abort(403, 'You do not have access to this project.');
         }
 
@@ -299,7 +299,7 @@ class ProjectController extends Controller
                 'all' => $request->all(),
                 'hasFile' => $request->hasFile('photo'),
                 'file' => $request->file('photo'),
-                'data' => $data
+                'data' => $data,
             ]);
 
             // Only update photo if a new one is uploaded
@@ -316,7 +316,7 @@ class ProjectController extends Controller
                 ->with('success', 'Project updated successfully.');
         } catch (\Exception $e) {
             return redirect()->route('admin.projects.index')
-                ->with('error', 'Failed to update project: ' . $e->getMessage());
+                ->with('error', 'Failed to update project: '.$e->getMessage());
         }
     }
 
@@ -329,7 +329,7 @@ class ProjectController extends Controller
         $userId = Auth::id();
         $isOwner = $project->created_by === $userId;
 
-        if (!$isOwner) {
+        if (! $isOwner) {
             abort(403, 'Only the project owner can delete this project.');
         }
 
@@ -346,10 +346,11 @@ class ProjectController extends Controller
                 ->route('admin.projects.index')
                 ->with('success', 'Project deleted successfully.');
         } catch (\Exception $e) {
-            Log::error('Project deletion failed: ' . $e->getMessage());
+            Log::error('Project deletion failed: '.$e->getMessage());
+
             return redirect()
                 ->route('admin.projects.index')
-                ->with('error', 'Failed to delete project: ' . $e->getMessage());
+                ->with('error', 'Failed to delete project: '.$e->getMessage());
         }
     }
 
@@ -366,7 +367,7 @@ class ProjectController extends Controller
                 'emails_count' => count($request->emails ?? []),
                 'usernames_count' => count($request->usernames ?? []),
                 'role' => $request->role,
-                'all_request_data' => $request->all()
+                'all_request_data' => $request->all(),
             ]);
 
             $request->validate([
@@ -376,7 +377,7 @@ class ProjectController extends Controller
                 'usernames.*' => 'required|string',
                 'role' => 'required|in:admin,member',
                 'message' => 'nullable|string|max:500',
-                'project_id' => 'required|exists:projects,id'
+                'project_id' => 'required|exists:projects,id',
             ]);
 
             $project = Project::findOrFail($request->project_id);
@@ -402,6 +403,7 @@ class ProjectController extends Controller
                 $user = User::where('email', $email)->first();
                 if ($user && $project->users()->where('user_id', $user->id)->exists()) {
                     $errors[] = "{$email} is already a member of this project.";
+
                     continue;
                 }
 
@@ -414,6 +416,7 @@ class ProjectController extends Controller
 
                 if ($existingInvitation) {
                     $errors[] = "An invitation has already been sent to {$email}.";
+
                     continue;
                 }
 
@@ -434,7 +437,7 @@ class ProjectController extends Controller
                     Mail::to($email)->send(new ProjectInvitationMail($project, $invitation, $message));
 
                     if ($mailDriver === 'log') {
-                        Log::warning("Email logged to storage/logs/laravel.log (driver: log) - Email was NOT actually sent!");
+                        Log::warning('Email logged to storage/logs/laravel.log (driver: log) - Email was NOT actually sent!');
                         $emailsLogged++;
                     } else {
                         Log::info("✅ Project invitation email sent successfully to: {$email}");
@@ -443,14 +446,14 @@ class ProjectController extends Controller
                 } catch (\Exception $e) {
                     $errorMessage = $e->getMessage();
                     Log::error("❌ Failed to send project invitation email to {$email}: {$errorMessage}");
-                    Log::error('Exception class: ' . get_class($e));
-                    Log::error('Exception trace: ' . $e->getTraceAsString());
+                    Log::error('Exception class: '.get_class($e));
+                    Log::error('Exception trace: '.$e->getTraceAsString());
 
                     // Provide more helpful error messages
                     if (str_contains($errorMessage, 'Connection') || str_contains($errorMessage, 'timeout')) {
-                        $errors[] = "Failed to connect to mail server. Check your SMTP settings in .env file.";
+                        $errors[] = 'Failed to connect to mail server. Check your SMTP settings in .env file.';
                     } elseif (str_contains($errorMessage, 'Authentication') || str_contains($errorMessage, 'password')) {
-                        $errors[] = "SMTP authentication failed. Check your MAIL_USERNAME and MAIL_PASSWORD in .env file.";
+                        $errors[] = 'SMTP authentication failed. Check your MAIL_USERNAME and MAIL_PASSWORD in .env file.';
                     } else {
                         $errors[] = "Failed to send invitation to {$email}: {$errorMessage}";
                     }
@@ -461,14 +464,16 @@ class ProjectController extends Controller
             foreach ($usernames as $username) {
                 $user = User::where('name', $username)->first();
 
-                if (!$user) {
+                if (! $user) {
                     $errors[] = "User @{$username} not found.";
+
                     continue;
                 }
 
                 // Check if user is already in project
                 if ($project->users()->where('user_id', $user->id)->exists()) {
                     $errors[] = "@{$username} is already a member of this project.";
+
                     continue;
                 }
 
@@ -481,6 +486,7 @@ class ProjectController extends Controller
 
                 if ($existingInvitation) {
                     $errors[] = "An invitation has already been sent to @{$username}.";
+
                     continue;
                 }
 
@@ -500,7 +506,7 @@ class ProjectController extends Controller
                     Mail::to($user->email)->send(new ProjectInvitationMail($project, $invitation, $message));
 
                     if ($mailDriver === 'log') {
-                        Log::warning("Email logged to storage/logs/laravel.log (driver: log) - Email was NOT actually sent!");
+                        Log::warning('Email logged to storage/logs/laravel.log (driver: log) - Email was NOT actually sent!');
                         $emailsLogged++;
                     } else {
                         Log::info("✅ Project invitation email sent successfully to: {$user->email} (@{$username})");
@@ -509,8 +515,8 @@ class ProjectController extends Controller
                 } catch (\Exception $e) {
                     $errorMessage = $e->getMessage();
                     Log::error("❌ Failed to send project invitation email to {$user->email}: {$errorMessage}");
-                    Log::error('Exception class: ' . get_class($e));
-                    Log::error('Exception trace: ' . $e->getTraceAsString());
+                    Log::error('Exception class: '.get_class($e));
+                    Log::error('Exception trace: '.$e->getTraceAsString());
 
                     // Provide more helpful error messages
                     if (str_contains($errorMessage, 'Connection') || str_contains($errorMessage, 'timeout')) {
@@ -536,7 +542,7 @@ class ProjectController extends Controller
                     $messages[] = "⚠️ {$emailsLogged} invitation(s) created but emails were NOT sent (logged only). Mail driver is set to 'log'. To actually send emails, configure SMTP in your .env file. Check {$logPath} to see the email content.";
                 }
 
-                if (!empty($errors)) {
+                if (! empty($errors)) {
                     $messages[] = implode(' ', $errors);
                 }
 
@@ -545,26 +551,28 @@ class ProjectController extends Controller
                 // Use warning if emails were only logged, success if actually sent
                 if ($invitationsSent > 0 && $emailsLogged === 0) {
                     return back()->with('success', $message);
-                } else if ($emailsLogged > 0) {
+                } elseif ($emailsLogged > 0) {
                     return back()->with('warning', $message);
                 } else {
                     return back()->with('success', $message);
                 }
             } else {
-                return back()->with('error', !empty($errors) ? implode(' ', $errors) : 'No invitations were created.');
+                return back()->with('error', ! empty($errors) ? implode(' ', $errors) : 'No invitations were created.');
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation failed for project invitation:', [
                 'errors' => $e->errors(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
+
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Failed to process project invitation: ' . $e->getMessage(), [
+            Log::error('Failed to process project invitation: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
-            return back()->with('error', 'Failed to process invitation: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to process invitation: '.$e->getMessage());
         }
     }
 
@@ -576,7 +584,7 @@ class ProjectController extends Controller
         $request->validate([
             'email' => 'required|email',
             'role' => 'required|in:admin,member',
-            'message' => 'nullable|string|max:500'
+            'message' => 'nullable|string|max:500',
         ]);
 
         $email = $request->email;
@@ -585,8 +593,9 @@ class ProjectController extends Controller
 
         // Find user by email
         $user = User::where('email', $email)->first();
-        if (!$user) {
+        if (! $user) {
             session()->flash('error', 'email  not found');
+
             return Inertia::location(url()->previous());
         }
         // Check if user is already in project
@@ -621,16 +630,19 @@ class ProjectController extends Controller
             Mail::to($email)->send(new ProjectInvitationMail($project, $invitation, $message));
 
             if ($mailDriver === 'log') {
-                Log::info("Email logged to storage/logs/laravel.log (driver: log)");
+                Log::info('Email logged to storage/logs/laravel.log (driver: log)');
+
                 return back()->with('success', 'Invitation created. Email logged (mail driver is set to "log"). Check storage/logs/laravel.log for the email content.');
             } else {
                 Log::info("Project invitation email sent successfully to: {$email}");
+
                 return back()->with('success', 'Invitation sent successfully via email.');
             }
         } catch (\Exception $e) {
-            Log::error('Failed to send project invitation email to ' . $email . ': ' . $e->getMessage());
-            Log::error('Exception trace: ' . $e->getTraceAsString());
-            return back()->with('error', 'Failed to send invitation email: ' . $e->getMessage());
+            Log::error('Failed to send project invitation email to '.$email.': '.$e->getMessage());
+            Log::error('Exception trace: '.$e->getTraceAsString());
+
+            return back()->with('error', 'Failed to send invitation email: '.$e->getMessage());
         }
     }
 
@@ -664,7 +676,7 @@ class ProjectController extends Controller
     public function updateRole(Request $request, Project $project, User $user)
     {
         $request->validate([
-            'role' => 'required|in:admin,member'
+            'role' => 'required|in:admin,member',
         ]);
 
         // Check if user is the project owner
@@ -682,7 +694,7 @@ class ProjectController extends Controller
         }
 
         $project->users()->updateExistingPivot($user->id, [
-            'role' => $request->role
+            'role' => $request->role,
         ]);
 
         return back()->with('success', 'User role updated successfully.');
@@ -714,16 +726,16 @@ class ProjectController extends Controller
             ->where('project_id', $project->id)
             ->first();
 
-        if (!$invitation) {
+        if (! $invitation) {
             return redirect('/')->with('error', 'Invalid invitation link.');
         }
 
-        if (!$invitation->isValid()) {
+        if (! $invitation->isValid()) {
             return redirect('/')->with('error', 'This invitation has expired or has already been used.');
         }
 
         // Check if user is authenticated
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')->with('error', 'Please log in to join the project.');
         }
 
@@ -737,7 +749,7 @@ class ProjectController extends Controller
             $canJoin = true;
         }
 
-        if (!$canJoin) {
+        if (! $canJoin) {
             return redirect('/')->with('error', 'This invitation is not for your account.');
         }
 
@@ -751,7 +763,7 @@ class ProjectController extends Controller
         $project->users()->attach($user->id, [
             'role' => $invitation->role,
             'invited_at' => $invitation->created_at,
-            'joined_at' => now()
+            'joined_at' => now(),
         ]);
 
         // Mark invitation as used
@@ -768,13 +780,13 @@ class ProjectController extends Controller
     {
         $request->validate([
             'file' => 'required|file|max:10240', // 10MB max
-            'project_id' => 'required|exists:projects,id'
+            'project_id' => 'required|exists:projects,id',
         ]);
 
         $project = Project::findOrFail($request->project_id);
 
         // Check if user has access to this project
-        if (!$project->users()->where('user_id', Auth::id())->exists() && $project->created_by !== Auth::id()) {
+        if (! $project->users()->where('user_id', Auth::id())->exists() && $project->created_by !== Auth::id()) {
             return redirect()->back()->with('error', 'You do not have permission to upload files to this project.');
         }
 
@@ -785,7 +797,7 @@ class ProjectController extends Controller
             $size = $file->getSize();
 
             // Generate unique filename
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('attachments', $filename, 'public');
 
             // Create attachment record
@@ -795,13 +807,14 @@ class ProjectController extends Controller
                 'path' => $path,
                 'mime_type' => $mimeType,
                 'size' => $size,
-                'uploaded_by' => Auth::id()
+                'uploaded_by' => Auth::id(),
             ]);
 
             return redirect()->back()->with('success', 'File uploaded successfully.');
         } catch (\Exception $e) {
-            Log::error('File upload failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to upload file: ' . $e->getMessage());
+            Log::error('File upload failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Failed to upload file: '.$e->getMessage());
         }
     }
 
@@ -813,7 +826,7 @@ class ProjectController extends Controller
         try {
             // Check if user has permission to delete this attachment
             $project = $attachment->project;
-            if (!$project->users()->where('user_id', Auth::id())->exists() && $project->created_by !== Auth::id()) {
+            if (! $project->users()->where('user_id', Auth::id())->exists() && $project->created_by !== Auth::id()) {
                 return redirect()->back()->with('error', 'You do not have permission to delete this file.');
             }
 
@@ -827,8 +840,9 @@ class ProjectController extends Controller
 
             return redirect()->back()->with('success', 'File deleted successfully.');
         } catch (\Exception $e) {
-            Log::error('File deletion failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to delete file: ' . $e->getMessage());
+            Log::error('File deletion failed: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Failed to delete file: '.$e->getMessage());
         }
     }
 
@@ -840,7 +854,7 @@ class ProjectController extends Controller
         $request->validate([
             'email' => 'required|email',
             'role' => 'required|in:admin,member',
-            'message' => 'nullable|string|max:500'
+            'message' => 'nullable|string|max:500',
         ]);
 
         $email = $request->email;
@@ -863,8 +877,9 @@ class ProjectController extends Controller
         if ($existingInvitation) {
             $inviteUrl = route('projects.join', [
                 'project' => $project->id,
-                'token' => $existingInvitation->token
+                'token' => $existingInvitation->token,
             ]);
+
             return back()->with('info', "An invitation already exists. Share this link: {$inviteUrl}");
         }
 
@@ -874,15 +889,17 @@ class ProjectController extends Controller
         // Generate invitation URL
         $inviteUrl = route('projects.join', [
             'project' => $project->id,
-            'token' => $invitation->token
+            'token' => $invitation->token,
         ]);
 
         // Send email invitation
         try {
             Mail::to($email)->send(new ProjectInvitationMail($project, $invitation, $message));
+
             return back()->with('success', "Invitation sent successfully. Share link: {$inviteUrl}");
         } catch (\Exception $e) {
-            Log::error('Failed to send project invitation email: ' . $e->getMessage());
+            Log::error('Failed to send project invitation email: '.$e->getMessage());
+
             return back()->with('info', "Invitation created. Share this link: {$inviteUrl}");
         }
     }
@@ -896,7 +913,7 @@ class ProjectController extends Controller
         $isMember = $project->users()->where('users.id', Auth::id())->exists()
             || $project->created_by === Auth::id();
 
-        if (!$isMember) {
+        if (! $isMember) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -929,7 +946,7 @@ class ProjectController extends Controller
                             'name' => $message->replyTo->user->name,
                         ],
                     ] : null,
-                    'attachment_path' => $message->attachment_path ? asset('storage/' . $message->attachment_path) : null,
+                    'attachment_path' => $message->attachment_path ? asset('storage/'.$message->attachment_path) : null,
                     'attachment_type' => $message->attachment_type,
                     'attachment_name' => $message->attachment_name,
                     'audio_duration' => $message->audio_duration,
@@ -937,7 +954,7 @@ class ProjectController extends Controller
                     'user' => [
                         'id' => $message->user->id,
                         'name' => $message->user->name,
-                        'avatar' => $message->user->image ? asset('storage/' . $message->user->image) : null,
+                        'avatar' => $message->user->image ? asset('storage/'.$message->user->image) : null,
                     ],
                 ];
             });
@@ -952,8 +969,8 @@ class ProjectController extends Controller
     {
         try {
             $userId = Auth::id();
-            
-            if (!Schema::hasTable('project_message_notifications')) {
+
+            if (! Schema::hasTable('project_message_notifications')) {
                 return response()->json(['count' => 0]);
             }
 
@@ -964,7 +981,8 @@ class ProjectController extends Controller
 
             return response()->json(['count' => $count]);
         } catch (\Exception $e) {
-            Log::error('Failed to get unread message count: ' . $e->getMessage());
+            Log::error('Failed to get unread message count: '.$e->getMessage());
+
             return response()->json(['count' => 0]);
         }
     }
@@ -978,7 +996,7 @@ class ProjectController extends Controller
         $isMember = $project->users()->where('users.id', Auth::id())->exists()
             || $project->created_by === Auth::id();
 
-        if (!$isMember) {
+        if (! $isMember) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -992,8 +1010,8 @@ class ProjectController extends Controller
         // Ensure either content or audio is provided
         $hasContent = $request->has('content') && trim($request->input('content', '')) !== '';
         $hasAudio = $request->hasFile('audio');
-        
-        if (!$hasContent && !$hasAudio) {
+
+        if (! $hasContent && ! $hasAudio) {
             return response()->json(['error' => 'Either content or audio must be provided'], 422);
         }
 
@@ -1005,27 +1023,28 @@ class ProjectController extends Controller
         // Handle audio file upload
         if ($request->hasFile('audio')) {
             $audioFile = $request->file('audio');
-            
+
             // Validate file was uploaded successfully
-            if (!$audioFile->isValid()) {
+            if (! $audioFile->isValid()) {
                 return response()->json(['error' => 'Invalid audio file'], 422);
             }
-            
+
             $extension = $audioFile->getClientOriginalExtension() ?: 'webm';
-            $attachmentName = 'voice_message_' . time() . '_' . uniqid() . '.' . $extension;
+            $attachmentName = 'voice_message_'.time().'_'.uniqid().'.'.$extension;
             $attachmentPath = $audioFile->storeAs('project_messages/audio', $attachmentName, 'public');
-            
-            if (!$attachmentPath) {
+
+            if (! $attachmentPath) {
                 \Log::error('Failed to store audio file', [
                     'original_name' => $audioFile->getClientOriginalName(),
                     'size' => $audioFile->getSize(),
                 ]);
+
                 return response()->json(['error' => 'Failed to store audio file'], 500);
             }
-            
+
             $attachmentType = 'audio';
             $audioDuration = (int) $request->input('audio_duration', 0);
-            
+
             \Log::info('Audio file stored successfully', [
                 'path' => $attachmentPath,
                 'size' => $audioFile->getSize(),
@@ -1048,7 +1067,7 @@ class ProjectController extends Controller
 
         // Get all project members (creator + team members) excluding the sender
         $projectMembers = collect();
-        
+
         // Add creator if not the sender
         if ($project->created_by && $project->created_by != Auth::id()) {
             $creator = User::find($project->created_by);
@@ -1056,7 +1075,7 @@ class ProjectController extends Controller
                 $projectMembers->push($creator);
             }
         }
-        
+
         // Add team members excluding the sender
         $teamMembers = $project->users()->where('users.id', '!=', Auth::id())->get();
         $projectMembers = $projectMembers->merge($teamMembers)->unique('id');
@@ -1096,7 +1115,7 @@ class ProjectController extends Controller
                                 'message_id' => $message->id,
                                 'sender_user_id' => Auth::id(),
                             ]);
-                            if (!$success) {
+                            if (! $success) {
                                 \Illuminate\Support\Facades\Log::warning('Push notification send returned false for project message');
                             }
                         }
@@ -1115,9 +1134,9 @@ class ProjectController extends Controller
                     if ($ablyKey) {
                         $ably = new AblyRest($ablyKey);
                         $channel = $ably->channels->get("notifications:{$member->id}");
-                        
+
                         $channel->publish('new_notification', [
-                            'id' => 'project-message-' . $notification->id,
+                            'id' => 'project-message-'.$notification->id,
                             'type' => 'project_message',
                             'sender_name' => $sender->name,
                             'sender_image' => $sender->image,
@@ -1132,7 +1151,7 @@ class ProjectController extends Controller
                     Log::error('Failed to broadcast project message notification via Ably', [
                         'error' => $e->getMessage(),
                         'notification_id' => $notification->id ?? null,
-                        'user_id' => $member->id
+                        'user_id' => $member->id,
                     ]);
                 }
             } catch (\Exception $e) {
@@ -1140,7 +1159,7 @@ class ProjectController extends Controller
                     'error' => $e->getMessage(),
                     'project_id' => $project->id,
                     'message_id' => $message->id,
-                    'user_id' => $member->id
+                    'user_id' => $member->id,
                 ]);
             }
         }
@@ -1164,7 +1183,7 @@ class ProjectController extends Controller
                             'name' => $message->replyTo->user->name,
                         ],
                     ] : null,
-                    'attachment_path' => $message->attachment_path ? asset('storage/' . $message->attachment_path) : null,
+                    'attachment_path' => $message->attachment_path ? asset('storage/'.$message->attachment_path) : null,
                     'attachment_type' => $message->attachment_type,
                     'attachment_name' => $message->attachment_name,
                     'audio_duration' => $message->audio_duration,
@@ -1172,14 +1191,14 @@ class ProjectController extends Controller
                     'user' => [
                         'id' => $message->user->id,
                         'name' => $message->user->name,
-                        'avatar' => $message->user->image ? asset('storage/' . $message->user->image) : null,
+                        'avatar' => $message->user->image ? asset('storage/'.$message->user->image) : null,
                     ],
                 ];
 
                 $channel->publish('new-message', $broadcastData);
             }
         } catch (\Exception $e) {
-            Log::error('Failed to broadcast project message via Ably: ' . $e->getMessage());
+            Log::error('Failed to broadcast project message via Ably: '.$e->getMessage());
         }
 
         return response()->json([
@@ -1195,7 +1214,7 @@ class ProjectController extends Controller
                         'name' => $message->replyTo->user->name,
                     ],
                 ] : null,
-                'attachment_path' => $message->attachment_path ? asset('storage/' . $message->attachment_path) : null,
+                'attachment_path' => $message->attachment_path ? asset('storage/'.$message->attachment_path) : null,
                 'attachment_type' => $message->attachment_type,
                 'attachment_name' => $message->attachment_name,
                 'audio_duration' => $message->audio_duration,
@@ -1203,7 +1222,7 @@ class ProjectController extends Controller
                 'user' => [
                     'id' => $message->user->id,
                     'name' => $message->user->name,
-                    'avatar' => $message->user->image ? asset('storage/' . $message->user->image) : null,
+                    'avatar' => $message->user->image ? asset('storage/'.$message->user->image) : null,
                 ],
             ],
         ]);
@@ -1218,7 +1237,7 @@ class ProjectController extends Controller
         $isMember = $project->users()->where('users.id', Auth::id())->exists()
             || $project->created_by === Auth::id();
 
-        if (!$isMember) {
+        if (! $isMember) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -1292,7 +1311,7 @@ class ProjectController extends Controller
                 Log::warning('Ably key not configured - reaction update not broadcasted');
             }
         } catch (\Exception $e) {
-            Log::error('Failed to broadcast reaction update via Ably: ' . $e->getMessage());
+            Log::error('Failed to broadcast reaction update via Ably: '.$e->getMessage());
         }
 
         return response()->json([
@@ -1310,7 +1329,7 @@ class ProjectController extends Controller
         $isMember = $project->users()->where('users.id', Auth::id())->exists()
             || $project->created_by === Auth::id();
 
-        if (!$isMember) {
+        if (! $isMember) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -1359,7 +1378,7 @@ class ProjectController extends Controller
                             'name' => $message->replyTo->user->name,
                         ],
                     ] : null,
-                    'attachment_path' => $message->attachment_path ? asset('storage/' . $message->attachment_path) : null,
+                    'attachment_path' => $message->attachment_path ? asset('storage/'.$message->attachment_path) : null,
                     'attachment_type' => $message->attachment_type,
                     'attachment_name' => $message->attachment_name,
                     'audio_duration' => $message->audio_duration,
@@ -1367,14 +1386,14 @@ class ProjectController extends Controller
                     'user' => [
                         'id' => $message->user->id,
                         'name' => $message->user->name,
-                        'avatar' => $message->user->image ? asset('storage/' . $message->user->image) : null,
+                        'avatar' => $message->user->image ? asset('storage/'.$message->user->image) : null,
                     ],
                 ];
 
                 $channel->publish('message-updated', $broadcastData);
             }
         } catch (\Exception $e) {
-            Log::error('Failed to broadcast message update via Ably: ' . $e->getMessage());
+            Log::error('Failed to broadcast message update via Ably: '.$e->getMessage());
         }
 
         return response()->json([
@@ -1396,7 +1415,7 @@ class ProjectController extends Controller
                 'user' => [
                     'id' => $message->user->id,
                     'name' => $message->user->name,
-                    'avatar' => $message->user->image ? asset('storage/' . $message->user->image) : null,
+                    'avatar' => $message->user->image ? asset('storage/'.$message->user->image) : null,
                 ],
             ],
         ]);
@@ -1411,7 +1430,7 @@ class ProjectController extends Controller
         $isMember = $project->users()->where('users.id', Auth::id())->exists()
             || $project->created_by === Auth::id();
 
-        if (!$isMember) {
+        if (! $isMember) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -1447,7 +1466,7 @@ class ProjectController extends Controller
                 Log::warning('Ably key not configured - message deletion not broadcasted');
             }
         } catch (\Exception $e) {
-            Log::error('Failed to broadcast message deletion via Ably: ' . $e->getMessage());
+            Log::error('Failed to broadcast message deletion via Ably: '.$e->getMessage());
         }
 
         return response()->json([
