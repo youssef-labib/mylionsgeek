@@ -28,15 +28,14 @@ class JobPostingController extends Controller
 
         return Inertia::render('admin/jobs/index', [
             'jobs' => $jobs,
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('admin/jobs/create', [
             'recruiterOptions' => $this->recruiterOptions(),
             'jobTypeOptions' => self::JOB_TYPES,
         ]);
+    }
+
+    public function create(): RedirectResponse
+    {
+        return redirect()->route('admin.jobs.index');
     }
 
     public function store(Request $request): RedirectResponse

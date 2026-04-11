@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/react';
 import { Briefcase, Eye, EyeOff, ExternalLink, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 
-export default function JobsAdminHeader({ filteredJobs }) {
+export default function JobsAdminHeader({ filteredJobs, onOpenCreateJob = () => {} }) {
     const statsData = useMemo(() => {
         const total = filteredJobs.length;
         const published = filteredJobs.filter((j) => j.is_published).length;
@@ -20,11 +20,9 @@ export default function JobsAdminHeader({ filteredJobs }) {
         <>
             <StatsCard statsData={statsData} />
             <div className="flex flex-wrap items-center justify-end gap-3">
-                <Button asChild className="gap-2 bg-alpha text-white hover:bg-alpha/90">
-                    <Link href="/admin/jobs/create">
-                        <Plus className="h-4 w-4" />
-                        Create job
-                    </Link>
+                <Button type="button" onClick={onOpenCreateJob} className="gap-2 bg-alpha text-white hover:bg-alpha/90">
+                    <Plus className="h-4 w-4" />
+                    Create job
                 </Button>
                 <Button
                     asChild

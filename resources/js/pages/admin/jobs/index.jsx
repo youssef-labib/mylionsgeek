@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 import students from '../../../../../public/assets/images/banner/students.png';
+import AdminCreateJobDialog from './partials/AdminCreateJobDialog';
 import JobsAdminFilter from './partials/JobsAdminFilter';
 import JobsAdminHeader from './partials/JobsAdminHeader';
 import JobsAdminTable from './partials/JobsAdminTable';
@@ -13,9 +14,10 @@ const defaultFilters = {
     job_type: '',
 };
 
-export default function AdminJobsIndex({ jobs }) {
+export default function AdminJobsIndex({ jobs, recruiterOptions = [], jobTypeOptions = [] }) {
     const { auth } = usePage().props;
     const [filters, setFilters] = useState(defaultFilters);
+    const [createJobOpen, setCreateJobOpen] = useState(false);
 
     const jobTypes = useMemo(() => {
         const set = new Set(jobs.map((j) => j.job_type).filter(Boolean));
@@ -46,7 +48,13 @@ export default function AdminJobsIndex({ jobs }) {
                     title="Job postings"
                     description="Create postings, assign recruiters to each offer, and review what appears on the student job board."
                 />
-                <JobsAdminHeader filteredJobs={jobs} />
+                <JobsAdminHeader filteredJobs={jobs} onOpenCreateJob={() => setCreateJobOpen(true)} />
+                <AdminCreateJobDialog
+                    open={createJobOpen}
+                    onOpenChange={setCreateJobOpen}
+                    recruiterOptions={recruiterOptions}
+                    jobTypeOptions={jobTypeOptions}
+                />
                 <JobsAdminFilter
                     filters={filters}
                     setFilters={setFilters}
