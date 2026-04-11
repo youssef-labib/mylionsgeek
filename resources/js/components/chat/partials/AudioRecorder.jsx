@@ -103,7 +103,7 @@ export default function AudioRecorder({ onSend, onCancel, isRecording, recording
                 type="button"
                 size="icon"
                 onClick={onSend}
-                className="h-9 w-9 shrink-0 bg-alpha text-beta hover:bg-alpha/90 disabled:opacity-50"
+                className="h-9 w-9 shrink-0 bg-alpha text-black hover:bg-alpha/90 disabled:opacity-50"
                 title="Send audio"
             >
                 <Send className="h-4 w-4" />

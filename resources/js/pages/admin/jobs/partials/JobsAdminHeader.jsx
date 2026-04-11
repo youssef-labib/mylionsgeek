@@ -20,7 +20,7 @@ export default function JobsAdminHeader({ filteredJobs, onOpenCreateJob = () => 
         <>
             <StatsCard statsData={statsData} />
             <div className="flex flex-wrap items-center justify-end gap-3">
-                <Button type="button" onClick={onOpenCreateJob} className="gap-2 bg-alpha text-white hover:bg-alpha/90">
+                <Button type="button" onClick={onOpenCreateJob} className="gap-2 bg-alpha text-black hover:bg-alpha/90">
                     <Plus className="h-4 w-4" />
                     Create job
                 </Button>

@@ -49,7 +49,7 @@ const Education = ({ user }) => {
                         user?.educations?.map((education, index) => (
                             <div key={index} className="flex w-full items-start justify-between">
                                 <div className="flex gap-3">
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded bg-alpha font-bold text-beta">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded bg-alpha font-bold text-black">
                                         {education?.school?.slice(0, 1)}
                                     </div>
                                     <div className="flex-1">

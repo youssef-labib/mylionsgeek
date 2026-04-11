@@ -99,7 +99,7 @@ export default function AboutModal({ onOpen, onOpenChange, user }) {
                 {/* Footer */}
                 <div className="flex justify-end border-t border-gray-300 bg-light px-6 py-4 dark:border-dark_gray dark:bg-beta">
                     {/* <button
-                        className="px-6 py-2 bg-alpha text-beta rounded-lg hover:bg-alpha/90 transition font-medium disabled"
+                        className="px-6 py-2 bg-alpha text-black rounded-lg hover:bg-alpha/90 transition font-medium disabled"
                         >
                         Save
                         </button> */}
@@ -108,7 +108,7 @@ export default function AboutModal({ onOpen, onOpenChange, user }) {
                         type="submit"
                         disabled={processing}
                         className={`cursor-pointer rounded-lg px-6 py-2 font-semibold transition ${
-                            processing ? 'cursor-not-allowed bg-gray-300 text-gray-500' : 'bg-alpha text-beta hover:opacity-90'
+                            processing ? 'cursor-not-allowed bg-gray-300 text-gray-500' : 'bg-alpha text-black hover:opacity-90'
                         } `}
                     >
                         {processing ? 'Saving...' : 'Save'}

@@ -129,7 +129,7 @@ export default function JobPostingForm({
             </div>
 
             <div className="flex flex-wrap gap-3 pt-2">
-                <Button type="submit" disabled={processing} className="bg-alpha text-white hover:bg-alpha/90">
+                <Button type="submit" disabled={processing} className="bg-alpha text-black hover:bg-alpha/90">
                     {processing ? 'Saving…' : submitLabel}
                 </Button>
                 {onCancel ? (

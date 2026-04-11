@@ -16,7 +16,7 @@ import NotificationIcon from './NotificationIcon';
 import SearchDialog from './search-dialog';
 import ThemeToggle from './ThemeToggle';
 
-const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-dark dark:bg-alpha';
+const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-black dark:bg-alpha';
 
 export function AppHeader({ breadcrumbs = [] }) {
     const page = usePage();

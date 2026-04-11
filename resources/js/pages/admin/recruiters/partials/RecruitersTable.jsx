@@ -131,7 +131,7 @@ export default function RecruitersTable({ recruiters }) {
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                className={`cursor-pointer ${deleteUser.account_state === 1 ? 'bg-error text-light hover:bg-error/80' : 'bg-alpha text-dark hover:bg-alpha/80'}`}
+                                className={`cursor-pointer ${deleteUser.account_state === 1 ? 'bg-error text-black hover:bg-error/80' : 'bg-alpha text-black hover:bg-alpha/80'}`}
                                 onClick={deleteConfirmedUser}
                             >
                                 Continue

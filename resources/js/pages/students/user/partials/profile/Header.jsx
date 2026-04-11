@@ -206,7 +206,7 @@ const Header = ({ user, userFunctionality }) => {
                             {auth.user?.id == user?.id && (
                                 <button
                                     onClick={() => setOpenEdit(true)}
-                                    className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-alpha px-4 py-2 text-beta transition-colors hover:bg-alpha/90 sm:w-auto"
+                                    className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-alpha px-4 py-2 text-black transition-colors hover:bg-alpha/90 sm:w-auto"
                                 >
                                     <Edit2 className="h-4 w-4" />
                                     <span className="text-sm font-medium">Edit Profile</span>
@@ -218,8 +218,8 @@ const Header = ({ user, userFunctionality }) => {
                                         onClick={() => addOrRemoveFollow(user?.id, user?.isFollowing)}
                                         className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 transition-colors sm:w-auto ${
                                             user?.isFollowing
-                                                ? 'bg-dark text-light hover:bg-dark/90 dark:bg-alpha dark:text-beta'
-                                                : 'bg-alpha text-beta hover:bg-alpha/90'
+                                                ? 'bg-dark text-black hover:bg-dark/90 dark:bg-alpha dark:text-black'
+                                                : 'bg-alpha text-black hover:bg-alpha/90'
                                         }`}
                                     >
                                         <span className="text-sm font-medium">{user?.isFollowing ? 'Unfollow' : 'Follow'}</span>
@@ -284,7 +284,7 @@ const Header = ({ user, userFunctionality }) => {
                                 {auth.user?.id == user?.id && (
                                     <button
                                         onClick={() => setOpenEdit(true)}
-                                        className="flex cursor-pointer items-center gap-2 rounded-lg bg-alpha px-4 py-2 text-beta transition-colors hover:bg-alpha/90"
+                                        className="flex cursor-pointer items-center gap-2 rounded-lg bg-alpha px-4 py-2 text-black transition-colors hover:bg-alpha/90"
                                     >
                                         <Edit2 className="h-4 w-4" />
                                         <span className="text-sm font-medium">Edit Profile</span>
@@ -296,8 +296,8 @@ const Header = ({ user, userFunctionality }) => {
                                             onClick={() => addOrRemoveFollow(user?.id, user?.isFollowing)}
                                             className={`flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 transition-colors ${
                                                 user?.isFollowing
-                                                    ? 'bg-dark text-light hover:bg-dark/90 dark:bg-alpha dark:text-beta'
-                                                    : 'bg-alpha text-beta hover:bg-alpha/90'
+                                                    ? 'bg-dark text-black hover:bg-dark/90 dark:bg-alpha dark:text-black'
+                                                    : 'bg-alpha text-black hover:bg-alpha/90'
                                             }`}
                                         >
                                             <span className="text-sm font-medium">{user?.isFollowing ? 'Unfollow' : 'Follow'}</span>

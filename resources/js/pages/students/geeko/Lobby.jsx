@@ -132,7 +132,7 @@ export default function GeekoLobby({ session, participant, participantsCount }) 
                     <div className="mb-8 rounded-2xl border border-white/20 bg-white/60 p-8 text-center shadow-xl backdrop-blur-xl dark:bg-dark/50">
                         <h2 className="mb-4 text-2xl font-bold text-dark dark:text-light">You're In!</h2>
                         <div className="mb-6 flex items-center justify-center space-x-4">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-alpha text-2xl font-bold text-dark">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-alpha text-2xl font-bold text-black">
                                 {participant.nickname.charAt(0).toUpperCase()}
                             </div>
                             <div className="text-left">
@@ -157,7 +157,7 @@ export default function GeekoLobby({ session, participant, participantsCount }) 
                                     .filter(p => p.id !== participant.id)
                                     .map(p => (
                                         <div key={p.id} className="flex items-center space-x-3 bg-alpha/5 rounded-lg p-3">
-                                            <div className="w-8 h-8 rounded-full bg-alpha text-dark flex items-center justify-center font-bold text-sm">
+                                            <div className="w-8 h-8 rounded-full bg-alpha text-black flex items-center justify-center font-bold text-sm">
                                                 {p.nickname.charAt(0).toUpperCase()}
                                             </div>
                                             <span className="text-sm font-semibold text-dark dark:text-light truncate">

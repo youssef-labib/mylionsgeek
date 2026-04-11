@@ -71,7 +71,7 @@ export default function MessageItem({
                 <div
                     className={cn(
                         'group/message relative max-w-[75%] rounded-2xl px-4 py-2.5 text-sm shadow-sm',
-                        isCurrentUser ? 'rounded-br-md bg-alpha text-beta' : 'rounded-bl-md bg-muted',
+                        isCurrentUser ? 'rounded-br-md bg-alpha text-black' : 'rounded-bl-md bg-muted',
                     )}
                 >
                     {message.body && (
@@ -145,7 +145,7 @@ export default function MessageItem({
                                 onClick={() => onPlayAudio(message.attachment_path, message.id)}
                                 className={cn(
                                     'rounded-full p-2.5 transition-all hover:scale-110',
-                                    isCurrentUser ? 'bg-alpha text-beta hover:bg-alpha/90' : 'bg-muted hover:bg-accent',
+                                    isCurrentUser ? 'bg-alpha text-black hover:bg-alpha/90' : 'bg-muted hover:bg-accent',
                                 )}
                             >
                                 {isPlayingAudio === message.id ? <Pause className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" />}

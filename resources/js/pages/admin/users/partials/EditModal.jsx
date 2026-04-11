@@ -328,7 +328,7 @@ const EditUserModal = ({ open, editedUser, onClose, roles = [], status = [], tra
                                             type="button"
                                             onClick={addSocialLink}
                                             disabled={!newSocialPlatform || !newSocialUrl}
-                                            className="w-full rounded-full bg-alpha px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                            className="w-full rounded-full bg-alpha px-3 py-2 text-sm font-medium text-black transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
                                         >
                                             Save
                                         </button>

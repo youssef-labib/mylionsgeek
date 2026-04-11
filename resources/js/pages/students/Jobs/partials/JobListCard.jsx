@@ -14,7 +14,7 @@ export default function JobListCard({ job }) {
                     <p className="text-xs font-medium text-alpha dark:text-alpha">{job.reference}</p>
                     <h3 className="mt-1 text-lg font-semibold text-beta dark:text-light">{job.title}</h3>
                 </div>
-                <Badge variant="secondary" className="bg-alpha/15 text-beta dark:bg-alpha/25 dark:text-light">
+                <Badge variant="secondary" className="bg-alpha/15 text-black dark:bg-alpha/25 dark:text-black">
                     {formatJobTypeLabel(job.job_type)}
                 </Badge>
             </div>

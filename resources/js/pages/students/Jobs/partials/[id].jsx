@@ -52,7 +52,7 @@ export default function JobShow({ job }) {
                             <h1 className="mt-2 text-2xl font-bold text-beta dark:text-light">{job.title}</h1>
 
                             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-beta/75 dark:text-light/75">
-                                <Badge className="bg-alpha/15 text-beta dark:bg-alpha/25 dark:text-light">{formatJobTypeLabel(job.job_type)}</Badge>
+                                <Badge className="bg-alpha/15 text-black dark:bg-alpha/25 dark:text-black">{formatJobTypeLabel(job.job_type)}</Badge>
                                 {job.location && (
                                     <span className="inline-flex items-center gap-1">
                                         <MapPin className="h-4 w-4" />
@@ -88,7 +88,7 @@ export default function JobShow({ job }) {
                             {job.is_owner && job.manage && (
                                 <div className="mt-8 rounded-md border border-alpha/20 bg-alpha/5 p-4 dark:border-light/15">
                                     <p className="text-sm font-medium text-beta dark:text-light">You manage this posting.</p>
-                                    <Button className="mt-3 bg-alpha text-white hover:bg-alpha/90" size="sm" asChild>
+                                    <Button className="mt-3 bg-alpha text-black hover:bg-alpha/90" size="sm" asChild>
                                         <Link href={job.manage.href}>{job.manage.label}</Link>
                                     </Button>
                                 </div>
@@ -111,7 +111,7 @@ export default function JobShow({ job }) {
                                                 className="border-alpha/30 dark:border-light/15"
                                             />
                                             {errors.cover_letter && <p className="text-sm text-red-600">{errors.cover_letter}</p>}
-                                            <Button type="submit" disabled={processing} className="bg-alpha text-white hover:bg-alpha/90">
+                                            <Button type="submit" disabled={processing} className="bg-alpha text-black hover:bg-alpha/90">
                                                 {processing ? 'Sending…' : 'Submit application'}
                                             </Button>
                                         </form>

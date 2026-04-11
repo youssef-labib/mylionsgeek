@@ -71,7 +71,7 @@ export default function JoinGeeko() {
                             <button
                                 type="submit"
                                 disabled={processing || data.session_code.length !== 8}
-                                className="flex w-full items-center justify-center space-x-3 rounded-xl bg-alpha px-6 py-4 text-xl font-bold text-dark transition-all duration-300 hover:scale-105 hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+                                className="flex w-full items-center justify-center space-x-3 rounded-xl bg-alpha px-6 py-4 text-xl font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                             >
                                 {processing ? (
                                     <>

@@ -211,7 +211,7 @@ export default function MessageInput({
                             type="submit"
                             size="icon"
                             disabled={sending || (!newMessage.trim() && !attachment && !audioBlob)}
-                            className="h-9 w-9 shrink-0 bg-alpha text-beta hover:bg-alpha/90 disabled:opacity-50"
+                            className="h-9 w-9 shrink-0 bg-alpha text-black hover:bg-alpha/90 disabled:opacity-50"
                         >
                             <Send className="h-4 w-4" />
                         </Button>

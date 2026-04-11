@@ -998,7 +998,7 @@ const User = ({ user, trainings, close, open }) => {
                                         </svg>
                                         <div className="text-sm font-bold text-alpha">Contracts</div>
                                     </div>
-                                    <div className="rounded-full bg-alpha px-2.5 py-1 text-xs font-semibold text-white">
+                                    <div className="rounded-full bg-alpha px-2.5 py-1 text-xs font-semibold text-black">
                                         {docs.contracts?.length || 0}
                                     </div>
                                 </div>
@@ -1076,7 +1076,7 @@ const User = ({ user, trainings, close, open }) => {
                                         </svg>
                                         <div className="text-sm font-bold text-alpha">Medical Certificates</div>
                                     </div>
-                                    <div className="rounded-full bg-alpha px-2.5 py-1 text-xs font-semibold text-white">
+                                    <div className="rounded-full bg-alpha px-2.5 py-1 text-xs font-semibold text-black">
                                         {docs.medicals?.length || 0}
                                     </div>
                                 </div>

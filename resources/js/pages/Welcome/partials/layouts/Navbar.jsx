@@ -89,7 +89,7 @@ const Navbar = ({ scrollToSection, setDarkMode, darkMode, mobileMenuOpen, setMob
                             {darkMode ? <Sun className="h-4 w-4 text-alpha" /> : <Moon className="h-4 w-4 text-neutral-600" />}
                         </button>
                         <Link href={'/login'}>
-                            <button className="inline-flex items-center rounded-lg border-2 border-transparent bg-alpha px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[#2f343a] hover:text-white">
+                            <button className="inline-flex items-center rounded-lg border-2 border-transparent bg-alpha px-4 py-2 text-sm font-medium text-black transition-all hover:bg-[#2f343a] hover:text-black">
                                 Log in
                             </button>
                         </Link>

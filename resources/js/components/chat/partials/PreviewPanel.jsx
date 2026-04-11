@@ -78,7 +78,7 @@ export default function PreviewPanel({ attachment, onClose, onPrevious, onNext, 
                     <div className="flex max-w-md flex-col items-center gap-4 rounded-lg bg-beta p-12 dark:bg-dark_gray">
                         <FileIcon className="h-24 w-24 text-alpha" />
                         <p className="text-center font-medium text-light">{attachment.name || 'Attachment'}</p>
-                        <Button onClick={handleDownload} className="bg-alpha text-beta hover:bg-alpha/90">
+                        <Button onClick={handleDownload} className="bg-alpha text-black hover:bg-alpha/90">
                             <Download className="mr-2 h-4 w-4" />
                             Download
                         </Button>

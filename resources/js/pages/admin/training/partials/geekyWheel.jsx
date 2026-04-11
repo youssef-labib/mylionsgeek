@@ -114,7 +114,7 @@ const GeekyWheel = ({
                     {selectedWinner && (
                         <div className="mt-6 text-center">
                             <div className="flex flex-col items-center space-y-4">
-                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-alpha text-3xl font-bold text-dark">
+                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-alpha text-3xl font-bold text-black">
                                     {selectedWinner.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
@@ -128,7 +128,7 @@ const GeekyWheel = ({
                     <div className="mt-8 flex flex-col space-y-3">
                         <button
                             onClick={continueSpinning}
-                            className="w-full rounded-xl bg-alpha px-6 py-3 text-lg font-bold text-dark transition-all duration-300 hover:bg-alpha/90"
+                            className="w-full rounded-xl bg-alpha px-6 py-3 text-lg font-bold text-black transition-all duration-300 hover:bg-alpha/90"
                         >
                             Continue Spinning
                         </button>

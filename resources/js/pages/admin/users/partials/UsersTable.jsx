@@ -187,7 +187,7 @@ const UsersTable = ({ users, filters, roles = [], trainings = [], status }) => {
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                className={`cursor-pointer ${deleteUser.account_state ? 'bg-alpha text-dark hover:bg-alpha/80' : 'bg-error text-light hover:bg-error/80'}`}
+                                className={`cursor-pointer ${deleteUser.account_state ? 'bg-alpha text-black hover:bg-alpha/80' : 'bg-error text-black hover:bg-error/80'}`}
                                 onClick={deleteConfirmedUser}
                             >
                                 Continue
