@@ -4,6 +4,7 @@ import { usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 import students from '../../../../../public/assets/images/banner/students.png';
 import AdminCreateJobDialog from './partials/AdminCreateJobDialog';
+import AdminEditJobDialog from './partials/AdminEditJobDialog';
 import JobsAdminFilter from './partials/JobsAdminFilter';
 import JobsAdminHeader from './partials/JobsAdminHeader';
 import JobsAdminTable from './partials/JobsAdminTable';
@@ -18,6 +19,7 @@ export default function AdminJobsIndex({ jobs, recruiterOptions = [], jobTypeOpt
     const { auth } = usePage().props;
     const [filters, setFilters] = useState(defaultFilters);
     const [createJobOpen, setCreateJobOpen] = useState(false);
+    const [jobToEdit, setJobToEdit] = useState(null);
 
     const jobTypes = useMemo(() => {
         const set = new Set(jobs.map((j) => j.job_type).filter(Boolean));
@@ -55,13 +57,24 @@ export default function AdminJobsIndex({ jobs, recruiterOptions = [], jobTypeOpt
                     recruiterOptions={recruiterOptions}
                     jobTypeOptions={jobTypeOptions}
                 />
+                <AdminEditJobDialog
+                    open={jobToEdit !== null}
+                    onOpenChange={(next) => {
+                        if (!next) {
+                            setJobToEdit(null);
+                        }
+                    }}
+                    job={jobToEdit}
+                    recruiterOptions={recruiterOptions}
+                    jobTypeOptions={jobTypeOptions}
+                />
                 <JobsAdminFilter
                     filters={filters}
                     setFilters={setFilters}
                     jobTypes={jobTypes}
                     initialFilters={defaultFilters}
                 />
-                <JobsAdminTable jobs={filteredJobs} />
+                <JobsAdminTable jobs={filteredJobs} onEditJob={setJobToEdit} />
             </div>
         </AppLayout>
     );

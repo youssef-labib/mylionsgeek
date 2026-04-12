@@ -59,27 +59,6 @@ class JobPostingController extends Controller
         return redirect()->route('admin.jobs.index')->with('success', 'Job posting created.');
     }
 
-    public function edit(Job $job): Response
-    {
-        $job->load(['recruiters:id']);
-
-        return Inertia::render('admin/jobs/edit', [
-            'job' => [
-                'id' => $job->id,
-                'reference' => $job->reference,
-                'title' => $job->title,
-                'description' => $job->description,
-                'location' => $job->location,
-                'job_type' => $job->job_type,
-                'skills' => $job->skills ?? [],
-                'is_published' => (bool) $job->is_published,
-                'recruiter_ids' => $job->recruiters->pluck('id')->all(),
-            ],
-            'recruiterOptions' => $this->recruiterOptions(),
-            'jobTypeOptions' => self::JOB_TYPES,
-        ]);
-    }
-
     public function update(Request $request, Job $job): RedirectResponse
     {
         $validated = $this->validatedJobRequest($request);
@@ -152,10 +131,12 @@ class JobPostingController extends Controller
             'id' => $job->id,
             'reference' => $job->reference,
             'title' => $job->title,
+            'description' => $job->description,
             'job_type' => $job->job_type,
             'location' => $job->location,
             'is_published' => (bool) $job->is_published,
             'skills' => $job->skills ?? [],
+            'recruiter_ids' => $job->recruiters->pluck('id')->map(fn ($id) => (int) $id)->values()->all(),
             'created_at' => $job->created_at?->toIso8601String(),
             'creator' => $job->creator ? [
                 'id' => $job->creator->id,

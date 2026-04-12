@@ -1,12 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Link } from '@inertiajs/react';
 import { ChevronsLeft, ChevronsRight, ExternalLink, Pencil } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatJobTypeLabel } from './adminJobHelpers';
 
-export default function JobsAdminTable({ jobs }) {
+export default function JobsAdminTable({ jobs, onEditJob }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const totalPages = Math.max(1, Math.ceil(jobs.length / itemsPerPage));
@@ -78,11 +77,15 @@ export default function JobsAdminTable({ jobs }) {
                             </TableCell>
                             <TableCell>
                                 <div className="flex flex-wrap gap-1">
-                                    <Button variant="ghost" size="sm" className="h-8 gap-1 text-alpha" asChild>
-                                        <Link href={`/admin/jobs/${job.id}/edit`}>
-                                            <Pencil className="h-4 w-4" />
-                                            Edit
-                                        </Link>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 gap-1 text-alpha"
+                                        onClick={() => onEditJob(job)}
+                                    >
+                                        <Pencil className="h-4 w-4" />
+                                        Edit
                                     </Button>
                                     <Button variant="ghost" size="sm" className="h-8 gap-1 text-alpha" asChild>
                                         <a href={`/students/jobs/${job.id}`} target="_blank" rel="noreferrer">
