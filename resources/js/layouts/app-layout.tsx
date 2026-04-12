@@ -11,7 +11,8 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children, breadcrumbs, ...props }: AppLayoutProps) {
-    const { auth } = usePage<{ auth: { user: { role: string[] | string } } }>().props;
+    const page = usePage<{ auth: { user: { role: string[] | string } } }>();
+    const { auth } = page.props;
 
     // Always treat roles as an array
     const userRoles: string[] = Array.isArray(auth?.user?.role) ? auth.user.role : [auth?.user?.role];
@@ -20,7 +21,11 @@ export default function AppLayout({ children, breadcrumbs, ...props }: AppLayout
     const isStaff = userRoles.some((role) =>
         ['admin', 'moderateur', 'studio_responsable', 'coach', 'super_admin'].includes(role),
     );
-    const useSidebarLayout = isRecruiter || isStaff;
+
+    // Student feed: use top navbar only (no admin sidebar) so staff can browse like students.
+    const pathname = page.url.split('?')[0];
+    const isStudentFeedRoute = pathname === '/students/feed';
+    const useSidebarLayout = (isRecruiter || isStaff) && !isStudentFeedRoute;
 
     const Layout = useSidebarLayout ? AppSidebarLayout : AppHeaderLayout;
 

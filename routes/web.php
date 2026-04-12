@@ -22,7 +22,7 @@ Route::get('/', function () {
             return redirect()->route('student.feed');
         }
         if (in_array('recruiter', $roles, true)) {
-            return redirect()->route('recruiter.jobs.index');
+            return redirect()->route('recruiter.dashboard');
         }
 
         return redirect()->route('profile.edit');

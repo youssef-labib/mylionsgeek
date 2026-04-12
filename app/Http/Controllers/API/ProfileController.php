@@ -12,8 +12,8 @@ class ProfileController extends Controller
     public function index(Request $request)
     {
         $user = Auth::guard('sanctum')->user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
@@ -34,7 +34,7 @@ class ProfileController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'avatar' => $user->image ? url('storage/' . $user->image) : null,
+            'avatar' => $user->image ? url('storage/'.$user->image) : null,
             'image' => $user->image ?? null,
             'roles' => $roles,
             'role' => $roles,
@@ -53,7 +53,7 @@ class ProfileController extends Controller
             $userData['state'] = $user->account_state ?? 0;
             $userData['access_cowork'] = $user->access_cowork ?? 0;
             $userData['access_studio'] = $user->access_studio ?? 0;
-            $userData['wakatime_api_key'] = $user->wakatime_api_key ? substr($user->wakatime_api_key, 0, 10) . '...' : null;
+            $userData['wakatime_api_key'] = $user->wakatime_api_key ? substr($user->wakatime_api_key, 0, 10).'...' : null;
         }
 
         // Always include last_online for profile display
@@ -62,7 +62,7 @@ class ProfileController extends Controller
         // Add followers and following counts
         $userData['followers_count'] = $user->followers()->count();
         $userData['following_count'] = $user->following()->count();
-        
+
         // Add posts count
         $userData['posts_count'] = $user->posts()->count();
 
@@ -72,14 +72,24 @@ class ProfileController extends Controller
     public function show(Request $request, $userId)
     {
         $currentUser = Auth::guard('sanctum')->user();
-        
-        if (!$currentUser) {
+
+        if (! $currentUser) {
             return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $currentUserRoles = [];
+        if (isset($currentUser->role)) {
+            $currentUserRoles = is_array($currentUser->role) ? $currentUser->role : (is_string($currentUser->role) ? json_decode($currentUser->role, true) ?? [$currentUser->role] : [$currentUser->role]);
+        }
+        $currentUserRolesLower = array_map('strtolower', $currentUserRoles);
+        $isRecruiter = in_array('recruiter', $currentUserRolesLower, true);
+        if ($isRecruiter && (int) $userId !== (int) $currentUser->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $user = User::where('id', $userId)->where('account_state', 0)->first();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
@@ -89,19 +99,14 @@ class ProfileController extends Controller
             $roles = is_array($user->role) ? $user->role : (is_string($user->role) ? json_decode($user->role, true) ?? [$user->role] : [$user->role]);
         }
 
-        // Check if current user is admin
-        $currentUserRoles = [];
-        if (isset($currentUser->role)) {
-            $currentUserRoles = is_array($currentUser->role) ? $currentUser->role : (is_string($currentUser->role) ? json_decode($currentUser->role, true) ?? [$currentUser->role] : [$currentUser->role]);
-        }
-        $isAdmin = in_array('admin', array_map('strtolower', $currentUserRoles)) || in_array('coach', array_map('strtolower', $currentUserRoles));
+        $isAdmin = in_array('admin', $currentUserRolesLower, true) || in_array('coach', $currentUserRolesLower, true);
 
         // Base user data
         $userData = [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'avatar' => $user->image ? url('storage/' . $user->image) : null,
+            'avatar' => $user->image ? url('storage/'.$user->image) : null,
             'image' => $user->image ?? null,
             'roles' => $roles,
             'role' => $roles,
@@ -117,7 +122,7 @@ class ProfileController extends Controller
         // Add followers and following counts
         $userData['followers_count'] = $user->followers()->count();
         $userData['following_count'] = $user->following()->count();
-        
+
         // Add posts count
         $userData['posts_count'] = $user->posts()->count();
 
@@ -129,10 +134,9 @@ class ProfileController extends Controller
             $userData['account_state'] = $user->account_state ?? 0;
             $userData['access_cowork'] = $user->access_cowork ?? 0;
             $userData['access_studio'] = $user->access_studio ?? 0;
-            $userData['wakatime_api_key'] = $user->wakatime_api_key ? substr($user->wakatime_api_key, 0, 10) . '...' : null;
+            $userData['wakatime_api_key'] = $user->wakatime_api_key ? substr($user->wakatime_api_key, 0, 10).'...' : null;
         }
 
         return response()->json($userData);
     }
 }
-

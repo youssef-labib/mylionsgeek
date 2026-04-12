@@ -13,11 +13,15 @@ Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsa
     Route::get('/feed', [StudentController::class, 'index'])->name('student.feed');
 });
 
+// Recruiters may browse and apply to jobs only — not student social profiles.
 Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable,recruiter'])->prefix('students')->group(function () {
-    Route::put('/update/{user}', [UsersController::class, 'update']);
     Route::get('/jobs', [StudentJobController::class, 'index'])->name('student.jobs.index');
     Route::get('/jobs/{job}', [StudentJobController::class, 'show'])->whereNumber('job')->name('student.jobs.show');
     Route::post('/jobs/{job}/apply', [StudentJobController::class, 'apply'])->whereNumber('job')->name('student.jobs.apply');
+});
+
+Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable'])->prefix('students')->group(function () {
+    Route::put('/update/{user}', [UsersController::class, 'update']);
     Route::get('/{id}/posts', [StudentController::class, 'userPosts'])->whereNumber('id')->name('student.posts');
     Route::get('/{id}', [StudentController::class, 'userProfile'])->whereNumber('id');
     Route::post('/changeCover/{id}', [StudentController::class, 'changeCover']);

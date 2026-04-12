@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewJobApplicationMail;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -72,12 +74,15 @@ class StudentJobController extends Controller
             ? $job->applications()->where('user_id', $user->id)->exists()
             : false;
 
+        $uid = $user ? (int) $user->id : 0;
+        $isCreator = $job->user_id !== null && (int) $job->user_id === $uid;
+        $isAssignedRecruiter = $user ? $job->recruiters()->where('users.id', $uid)->exists() : false;
+
+        // Student job board: anyone with the "student" role always gets the applicant UX (Apply), never the manage strip.
         $isManager = false;
         $manage = null;
-        if ($user) {
-            $uid = (int) $user->id;
-            $isAdminCreator = $job->user_id !== null && (int) $job->user_id === $uid;
-            $isAssignedRecruiter = $job->recruiters()->where('users.id', $uid)->exists();
+        if ($user && ! $isStudent) {
+            $isAdminCreator = $isCreator;
             $isManager = $isAdminCreator || $isAssignedRecruiter;
             if ($isAdminCreator) {
                 $manage = ['href' => '/admin/jobs', 'label' => 'Manage in admin'];
@@ -86,8 +91,10 @@ class StudentJobController extends Controller
             }
         }
 
+        $canApply = $isStudent && $user && ! $isCreator && ! $isAssignedRecruiter && ! $hasApplied;
+
         return Inertia::render('students/Jobs/partials/[id]', [
-            'job' => $this->serializeJobDetail($job, $hasApplied, $isManager, $manage),
+            'job' => $this->serializeJobDetail($job, $hasApplied, $isManager, $manage, $canApply),
         ]);
     }
 
@@ -110,18 +117,42 @@ class StudentJobController extends Controller
         }
 
         $validated = $request->validate([
-            'cover_letter' => ['nullable', 'string', 'max:5000'],
+            'subject' => ['required', 'string', 'max:255'],
+            'cover_letter' => ['required', 'string', 'max:10000'],
+            'cv' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
         ]);
 
         if ($job->applications()->where('user_id', $user->id)->exists()) {
             return back()->with('error', __('You have already applied to this job.'));
         }
 
-        $job->applications()->create([
+        $cvPath = $request->file('cv')->store('job-application-cvs', 'public');
+
+        /** @var \App\Models\JobApplication $application */
+        $application = $job->applications()->create([
             'user_id' => $user->id,
-            'cover_letter' => $validated['cover_letter'] ?? null,
+            'subject' => $validated['subject'],
+            'cover_letter' => $validated['cover_letter'],
+            'cv_path' => $cvPath,
             'status' => 'pending',
         ]);
+
+        $job->load(['recruiters', 'creator']);
+        $recipients = $job->recruiters;
+        if ($recipients->isEmpty() && $job->creator) {
+            $recipients = collect([$job->creator]);
+        }
+
+        $applicationsUrl = url('/recruiter/applications');
+        $sentTo = [];
+        foreach ($recipients as $recipient) {
+            $email = strtolower(trim((string) ($recipient->email ?? '')));
+            if ($email === '' || isset($sentTo[$email])) {
+                continue;
+            }
+            $sentTo[$email] = true;
+            Mail::to($recipient->email)->send(new NewJobApplicationMail($job, $application, $user, $applicationsUrl));
+        }
 
         return back()->with('success', __('Your application was submitted.'));
     }
@@ -153,7 +184,7 @@ class StudentJobController extends Controller
     /**
      * @param  array{href: string, label: string}|null  $manage
      */
-    private function serializeJobDetail(Job $job, bool $hasApplied = false, bool $isManager = false, ?array $manage = null): array
+    private function serializeJobDetail(Job $job, bool $hasApplied = false, bool $isManager = false, ?array $manage = null, bool $canApply = false): array
     {
         return [
             'id' => $job->id,
@@ -165,6 +196,7 @@ class StudentJobController extends Controller
             'skills' => $job->skills ?? [],
             'created_at' => $job->created_at->toIso8601String(),
             'has_applied' => $hasApplied,
+            'can_apply' => $canApply,
             'is_owner' => $isManager,
             'manage' => $manage,
         ];

@@ -22,6 +22,13 @@ import AppLogo from './app-logo';
 
 const getRecruiterNavItems = () => [
     {
+        id: 'recruiter_dashboard',
+        title: 'Dashboard',
+        href: '/recruiter/dashboard',
+        icon: LayoutGrid,
+        authorizedRoles: ['recruiter'],
+    },
+    {
         id: 'recruiter_jobs',
         title: 'Assigned jobs',
         href: '/recruiter/jobs',
@@ -33,6 +40,13 @@ const getRecruiterNavItems = () => [
         title: 'Applications',
         href: '/recruiter/applications',
         icon: ClipboardList,
+        authorizedRoles: ['recruiter'],
+    },
+    {
+        id: 'recruiter_interviews',
+        title: 'Interviews',
+        href: '/recruiter/interviews',
+        icon: Calendar,
         authorizedRoles: ['recruiter'],
     },
     {
@@ -141,7 +155,7 @@ export function AppSidebar() {
     const isStaff = userRoles.some((r) => ['admin', 'moderateur', 'studio_responsable', 'coach', 'super_admin'].includes(r));
     const isRecruiterOnlySidebar = userRoles.includes('recruiter') && !isStaff;
 
-    const logoHref = isRecruiterOnlySidebar ? '/recruiter/jobs' : '/admin/dashboard';
+    const logoHref = isRecruiterOnlySidebar ? '/recruiter/dashboard' : '/admin/dashboard';
 
     // Filter nav items based on user permissions
     const mainNavItems = useMemo(() => {

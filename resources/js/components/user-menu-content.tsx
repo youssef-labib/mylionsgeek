@@ -15,10 +15,20 @@ interface UserMenuContentProps {
     user: User;
 }
 
+function userRoles(user: User): string[] {
+    const r = user.role;
+    if (Array.isArray(r)) {
+        return r.filter(Boolean) as string[];
+    }
+    return r ? [r as string] : [];
+}
+
 export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
     const [isDocModalOpen, setIsDocModalOpen] = useState(false);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+    const isRecruiter = userRoles(user).includes('recruiter');
+    const profileHref = isRecruiter ? edit() : `/students/${user.id}`;
 
     const handleLogout = () => {
         cleanup();
@@ -43,7 +53,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </DropdownMenuItem>
                 </Rolegard>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={`/students/${user.id}`} prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={profileHref} prefetch onClick={cleanup}>
                         <UserIcon className="mr-2" />
                         View Profile
                     </Link>

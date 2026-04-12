@@ -1,10 +1,21 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Info, X } from 'lucide-react';
 
 // Header dial chatbox m3a 3amaliyet toolbox
 export default function ChatHeader({ conversation, onClose, onBack, onToolboxToggle }) {
+    const { auth } = usePage().props;
+    const roles = Array.isArray(auth?.user?.role) ? auth.user.role : auth?.user?.role ? [auth.user.role] : [];
+    const isRecruiter = roles.includes('recruiter');
+
+    const openPeerProfile = () => {
+        if (isRecruiter) {
+            return;
+        }
+        router.visit(`/students/${conversation.other_user.id}`);
+    };
+
     return (
         <div className="flex shrink-0 items-center gap-3 border-b bg-background px-5 py-4">
             {onBack && (
@@ -13,8 +24,9 @@ export default function ChatHeader({ conversation, onClose, onBack, onToolboxTog
                 </Button>
             )}
             <button
-                onClick={() => router.visit(`/students/${conversation.other_user.id}`)}
-                className="flex min-w-0 flex-1 items-center gap-3 transition-opacity hover:opacity-80"
+                type="button"
+                onClick={openPeerProfile}
+                className={`flex min-w-0 flex-1 items-center gap-3 ${isRecruiter ? 'cursor-default' : 'cursor-pointer transition-opacity hover:opacity-80'}`}
             >
                 <Avatar
                     className="h-11 w-11 flex-shrink-0 cursor-pointer ring-2 ring-primary/10"

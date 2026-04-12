@@ -1,7 +1,9 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
+import { Download } from 'lucide-react';
 
 function formatDate(iso) {
     if (!iso) return '—';
@@ -19,9 +21,14 @@ export default function RecruiterApplicationsIndex({ applications }) {
         <AppLayout>
             <Head title="Applications" />
             <div className="flex flex-col gap-6 p-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-beta dark:text-light">Applications</h1>
-                    <p className="mt-1 text-sm text-beta/70 dark:text-light/70">Students who applied to your job postings.</p>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold text-beta dark:text-light">Applications</h1>
+                        <p className="mt-1 text-sm text-beta/70 dark:text-light/70">Students who applied to your job postings.</p>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/recruiter/dashboard">Dashboard</Link>
+                    </Button>
                 </div>
 
                 {list.length === 0 ? (
@@ -42,9 +49,11 @@ export default function RecruiterApplicationsIndex({ applications }) {
                                 <TableRow>
                                     <TableHead>Job</TableHead>
                                     <TableHead>Applicant</TableHead>
+                                    <TableHead>Subject</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Applied</TableHead>
-                                    <TableHead>Cover letter</TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead className="w-[100px]">CV</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -57,18 +66,14 @@ export default function RecruiterApplicationsIndex({ applications }) {
                                         <TableCell>
                                             {row.applicant ? (
                                                 <div>
-                                                    <Link
-                                                        href={`/students/${row.applicant.id}`}
-                                                        className="font-medium text-alpha hover:underline"
-                                                    >
-                                                        {row.applicant.name}
-                                                    </Link>
+                                                    <span className="font-medium text-beta dark:text-light">{row.applicant.name}</span>
                                                     <span className="mt-0.5 block text-xs text-muted-foreground">{row.applicant.email}</span>
                                                 </div>
                                             ) : (
                                                 '—'
                                             )}
                                         </TableCell>
+                                        <TableCell className="max-w-[160px] text-sm font-medium">{row.subject ?? '—'}</TableCell>
                                         <TableCell>
                                             <Badge variant="secondary" className="capitalize">
                                                 {row.status ?? 'pending'}
@@ -78,6 +83,18 @@ export default function RecruiterApplicationsIndex({ applications }) {
                                         <TableCell className="max-w-xs text-sm text-beta/80 dark:text-light/80">
                                             {row.cover_letter ? (
                                                 <span className="line-clamp-3 whitespace-pre-wrap">{row.cover_letter}</span>
+                                            ) : (
+                                                <span className="text-muted-foreground">—</span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.has_cv ? (
+                                                <Button variant="outline" size="sm" className="gap-1" asChild>
+                                                    <a href={`/recruiter/applications/${row.id}/cv`}>
+                                                        <Download className="h-3.5 w-3.5" />
+                                                        CV
+                                                    </a>
+                                                </Button>
                                             ) : (
                                                 <span className="text-muted-foreground">—</span>
                                             )}
