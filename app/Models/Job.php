@@ -20,7 +20,6 @@ class Job extends Model
         'location',
         'job_type',
         'skills',
-        'deadline',
         'is_published',
         'user_id',
     ];
@@ -29,7 +28,6 @@ class Job extends Model
     {
         return [
             'skills' => 'array',
-            'deadline' => 'date',
             'is_published' => 'boolean',
         ];
     }
@@ -53,13 +51,6 @@ class Job extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
-    }
-
-    public function scopeOpenDeadline($query)
-    {
-        return $query->where(function ($q) {
-            $q->whereNull('deadline')->orWhereDate('deadline', '>=', now()->toDateString());
-        });
     }
 
     public static function generateUniqueReference(): string

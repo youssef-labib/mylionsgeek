@@ -17,7 +17,6 @@ class JobSeeder extends Seeder
                 'location' => 'Casablanca · Hybrid',
                 'job_type' => 'full_time',
                 'skills' => ['Laravel', 'React', 'TypeScript', 'MySQL'],
-                'deadline' => now()->addMonths(2)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0002',
@@ -26,7 +25,6 @@ class JobSeeder extends Seeder
                 'location' => 'Remote (Morocco)',
                 'job_type' => 'internship',
                 'skills' => ['React', 'Tailwind CSS', 'Figma'],
-                'deadline' => now()->addWeeks(6)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0003',
@@ -35,7 +33,6 @@ class JobSeeder extends Seeder
                 'location' => 'Rabat',
                 'job_type' => 'full_time',
                 'skills' => ['PHP', 'Laravel', 'Redis', 'Docker'],
-                'deadline' => now()->addMonths(3)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0004',
@@ -44,7 +41,6 @@ class JobSeeder extends Seeder
                 'location' => 'Casablanca · On-site',
                 'job_type' => 'part_time',
                 'skills' => ['JavaScript', 'HTML', 'CSS', 'Git'],
-                'deadline' => now()->addMonth()->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0005',
@@ -53,7 +49,6 @@ class JobSeeder extends Seeder
                 'location' => 'Hybrid',
                 'job_type' => 'internship',
                 'skills' => ['React Native', 'TypeScript', 'REST APIs'],
-                'deadline' => now()->addWeeks(10)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0006',
@@ -62,7 +57,6 @@ class JobSeeder extends Seeder
                 'location' => 'Remote',
                 'job_type' => 'contract',
                 'skills' => ['Docker', 'GitHub Actions', 'Linux', 'Nginx'],
-                'deadline' => now()->addWeeks(8)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0007',
@@ -71,7 +65,6 @@ class JobSeeder extends Seeder
                 'location' => 'Casablanca',
                 'job_type' => 'full_time',
                 'skills' => ['React', 'Vite', 'Tailwind CSS', 'SEO basics'],
-                'deadline' => null,
             ],
             [
                 'reference' => 'LG-JOB-2026-0008',
@@ -80,7 +73,6 @@ class JobSeeder extends Seeder
                 'location' => 'Remote',
                 'job_type' => 'internship',
                 'skills' => ['SQL', 'Python', 'Excel'],
-                'deadline' => now()->addWeeks(5)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0009',
@@ -89,7 +81,6 @@ class JobSeeder extends Seeder
                 'location' => 'Hybrid · Casablanca',
                 'job_type' => 'full_time',
                 'skills' => ['Laravel', 'React', 'WebSockets', 'PHPUnit'],
-                'deadline' => now()->addMonths(2)->toDateString(),
             ],
             [
                 'reference' => 'LG-JOB-2026-0010',
@@ -98,7 +89,6 @@ class JobSeeder extends Seeder
                 'location' => 'On-site',
                 'job_type' => 'internship',
                 'skills' => ['Premiere Pro', 'Storytelling', 'Social media'],
-                'deadline' => now()->addWeeks(4)->toDateString(),
             ],
         ];
 

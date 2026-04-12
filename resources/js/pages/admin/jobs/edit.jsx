@@ -11,7 +11,6 @@ export default function AdminJobEdit({ job, recruiterOptions = [], jobTypeOption
         location: job.location ?? '',
         job_type: job.job_type ?? jobTypeOptions[0] ?? 'full_time',
         skills: Array.isArray(job.skills) ? job.skills.join(', ') : job.skills ?? '',
-        deadline: job.deadline ?? '',
         is_published: job.is_published ?? true,
         recruiter_ids: job.recruiter_ids ?? [],
     });

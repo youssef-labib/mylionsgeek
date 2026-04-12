@@ -98,18 +98,6 @@ export default function JobPostingForm({
                 {errors.skills && <p className="text-sm text-red-600">{errors.skills}</p>}
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="deadline">Application deadline</Label>
-                <Input
-                    id="deadline"
-                    type="date"
-                    value={data.deadline ?? ''}
-                    onChange={(e) => setData('deadline', e.target.value)}
-                    className="border-alpha/30 dark:border-light/15"
-                />
-                {errors.deadline && <p className="text-sm text-red-600">{errors.deadline}</p>}
-            </div>
-
             <RecruiterMultiSelect
                 recruiterOptions={recruiterOptions}
                 selectedIds={data.recruiter_ids}

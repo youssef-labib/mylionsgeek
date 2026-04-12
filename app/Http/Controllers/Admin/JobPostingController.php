@@ -50,7 +50,6 @@ class JobPostingController extends Controller
             'location' => $validated['location'] ?? null,
             'job_type' => $validated['job_type'],
             'skills' => array_values(array_filter($validated['skills'] ?? [])),
-            'deadline' => $validated['deadline'] ?? null,
             'is_published' => (bool) ($validated['is_published'] ?? true),
             'user_id' => $request->user()->id,
         ]);
@@ -73,7 +72,6 @@ class JobPostingController extends Controller
                 'location' => $job->location,
                 'job_type' => $job->job_type,
                 'skills' => $job->skills ?? [],
-                'deadline' => $job->deadline?->format('Y-m-d'),
                 'is_published' => (bool) $job->is_published,
                 'recruiter_ids' => $job->recruiters->pluck('id')->all(),
             ],
@@ -93,7 +91,6 @@ class JobPostingController extends Controller
             'location' => $validated['location'] ?? null,
             'job_type' => $validated['job_type'],
             'skills' => array_values(array_filter($validated['skills'] ?? [])),
-            'deadline' => $validated['deadline'] ?? null,
             'is_published' => (bool) ($validated['is_published'] ?? true),
         ]);
 
@@ -137,7 +134,6 @@ class JobPostingController extends Controller
             'job_type' => ['required', 'string', Rule::in(self::JOB_TYPES)],
             'skills' => ['nullable', 'array'],
             'skills.*' => ['string', 'max:80'],
-            'deadline' => ['nullable', 'date'],
             'is_published' => ['sometimes', 'boolean'],
             'recruiter_ids' => ['nullable', 'array'],
             'recruiter_ids.*' => [
@@ -158,7 +154,6 @@ class JobPostingController extends Controller
             'title' => $job->title,
             'job_type' => $job->job_type,
             'location' => $job->location,
-            'deadline' => $job->deadline?->format('Y-m-d'),
             'is_published' => (bool) $job->is_published,
             'skills' => $job->skills ?? [],
             'created_at' => $job->created_at?->toIso8601String(),

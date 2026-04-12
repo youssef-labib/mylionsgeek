@@ -35,7 +35,6 @@ export default function RecruiterJobsIndex({ jobs }) {
                                     <TableHead>Type</TableHead>
                                     <TableHead>Applications</TableHead>
                                     <TableHead>Published</TableHead>
-                                    <TableHead>Deadline</TableHead>
                                     <TableHead>Public view</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -60,7 +59,6 @@ export default function RecruiterJobsIndex({ jobs }) {
                                                 {job.is_published ? 'Yes' : 'No'}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="text-sm">{job.deadline ?? '—'}</TableCell>
                                         <TableCell>
                                             {job.is_published ? (
                                                 <Button variant="ghost" size="sm" className="h-8 gap-1 text-alpha" asChild>

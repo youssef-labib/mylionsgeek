@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, MapPin } from 'lucide-react';
+import { ArrowLeft, MapPin } from 'lucide-react';
 import { formatJobTypeLabel } from './jobHelpers';
 
 export default function JobShow({ job }) {
@@ -57,12 +57,6 @@ export default function JobShow({ job }) {
                                     <span className="inline-flex items-center gap-1">
                                         <MapPin className="h-4 w-4" />
                                         {job.location}
-                                    </span>
-                                )}
-                                {job.deadline && (
-                                    <span className="inline-flex items-center gap-1">
-                                        <Calendar className="h-4 w-4" />
-                                        Apply by {job.deadline}
                                     </span>
                                 )}
                             </div>

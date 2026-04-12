@@ -30,7 +30,6 @@ class StudentJobController extends Controller
 
         $query = Job::query()
             ->published()
-            ->openDeadline()
             ->latest();
 
         if ($jobType) {
@@ -63,9 +62,6 @@ class StudentJobController extends Controller
     public function show(Request $request, Job $job): Response
     {
         if (! $job->is_published) {
-            abort(404);
-        }
-        if ($job->deadline && $job->deadline->isBefore(now()->startOfDay())) {
             abort(404);
         }
 
@@ -104,9 +100,6 @@ class StudentJobController extends Controller
         }
 
         if (! $job->is_published) {
-            abort(404);
-        }
-        if ($job->deadline && $job->deadline->isBefore(now()->startOfDay())) {
             abort(404);
         }
         if ($job->user_id !== null && (int) $job->user_id === (int) $user->id) {
@@ -150,7 +143,6 @@ class StudentJobController extends Controller
             'location' => $job->location,
             'job_type' => $job->job_type,
             'skills' => $skills,
-            'deadline' => $job->deadline?->format('Y-m-d'),
             'created_at' => $job->created_at->toIso8601String(),
         ];
     }
@@ -171,7 +163,6 @@ class StudentJobController extends Controller
             'location' => $job->location,
             'job_type' => $job->job_type,
             'skills' => $job->skills ?? [],
-            'deadline' => $job->deadline?->format('Y-m-d'),
             'created_at' => $job->created_at->toIso8601String(),
             'has_applied' => $hasApplied,
             'is_owner' => $isManager,
@@ -183,7 +174,6 @@ class StudentJobController extends Controller
     {
         return Job::query()
             ->published()
-            ->openDeadline()
             ->whereNotNull('job_type')
             ->where('job_type', '!=', '')
             ->distinct()
@@ -195,7 +185,6 @@ class StudentJobController extends Controller
     {
         $rows = Job::query()
             ->published()
-            ->openDeadline()
             ->pluck('skills');
 
         return $rows

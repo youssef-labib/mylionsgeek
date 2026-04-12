@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('job_type');
             $table->json('skills')->nullable();
-            $table->date('deadline')->nullable();
             $table->boolean('is_published')->default(true);
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();

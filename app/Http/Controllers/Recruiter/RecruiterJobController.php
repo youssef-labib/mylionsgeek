@@ -25,7 +25,6 @@ class RecruiterJobController extends Controller
                 'title' => $job->title,
                 'job_type' => $job->job_type,
                 'location' => $job->location,
-                'deadline' => $job->deadline?->format('Y-m-d'),
                 'is_published' => (bool) $job->is_published,
                 'skills' => $job->skills ?? [],
                 'applications_count' => $job->applications_count,

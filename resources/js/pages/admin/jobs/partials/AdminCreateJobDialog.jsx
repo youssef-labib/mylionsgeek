@@ -16,7 +16,6 @@ function buildDefaults(jobTypeOptions) {
         location: '',
         job_type: jobTypeOptions[0] ?? 'full_time',
         skills: '',
-        deadline: '',
         is_published: true,
         recruiter_ids: [],
     };

@@ -32,7 +32,6 @@ export default function JobsAdminTable({ jobs }) {
                         <TableHead>Title</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Published</TableHead>
-                        <TableHead>Deadline</TableHead>
                         <TableHead>Created by</TableHead>
                         <TableHead>Recruiters</TableHead>
                         <TableHead>Actions</TableHead>
@@ -58,7 +57,6 @@ export default function JobsAdminTable({ jobs }) {
                                     {job.is_published ? 'Yes' : 'No'}
                                 </Badge>
                             </TableCell>
-                            <TableCell className="text-sm">{job.deadline ?? '—'}</TableCell>
                             <TableCell className="text-sm">
                                 {job.creator ? (
                                     <span>
