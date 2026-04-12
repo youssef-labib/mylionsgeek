@@ -14,7 +14,7 @@ Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsa
 });
 
 // Recruiters may browse and apply to jobs only — not student social profiles.
-Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable,recruiter'])->prefix('students')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable,responsable_studio,coworker,moderateur,super_admin,recruiter'])->prefix('students')->group(function () {
     Route::get('/jobs', [StudentJobController::class, 'index'])->name('student.jobs.index');
     Route::get('/jobs/{job}', [StudentJobController::class, 'show'])->whereNumber('job')->name('student.jobs.show');
     Route::post('/jobs/{job}/apply', [StudentJobController::class, 'apply'])->whereNumber('job')->name('student.jobs.apply');

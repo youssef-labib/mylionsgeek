@@ -68,51 +68,29 @@ class StudentJobController extends Controller
         }
 
         $user = $request->user();
-        $roles = $user ? (is_array($user->role) ? $user->role : [$user->role]) : [];
-        $isStudent = in_array('student', $roles, true);
-        $hasApplied = $user && $isStudent
-            ? $job->applications()->where('user_id', $user->id)->exists()
-            : false;
+        $hasApplied = $user && $job->applications()->where('user_id', $user->id)->exists();
 
-        $uid = $user ? (int) $user->id : 0;
-        $isCreator = $job->user_id !== null && (int) $job->user_id === $uid;
-        $isAssignedRecruiter = $user ? $job->recruiters()->where('users.id', $uid)->exists() : false;
-
-        // Student job board: anyone with the "student" role always gets the applicant UX (Apply), never the manage strip.
-        $isManager = false;
-        $manage = null;
-        if ($user && ! $isStudent) {
-            $isAdminCreator = $isCreator;
-            $isManager = $isAdminCreator || $isAssignedRecruiter;
-            if ($isAdminCreator) {
-                $manage = ['href' => '/admin/jobs', 'label' => 'Manage in admin'];
-            } elseif ($isAssignedRecruiter) {
-                $manage = ['href' => '/recruiter/jobs', 'label' => 'Open assigned jobs'];
-            }
-        }
-
-        $canApply = $isStudent && $user && ! $isCreator && ! $isAssignedRecruiter && ! $hasApplied;
+        // Public job detail: Apply when the user may submit a new application (same rules as apply()).
+        $canApply = $user && $this->userCanStartNewApplication($job, $user);
 
         return Inertia::render('students/Jobs/partials/[id]', [
-            'job' => $this->serializeJobDetail($job, $hasApplied, $isManager, $manage, $canApply),
+            'job' => $this->serializeJobDetail($job, $hasApplied, false, null, $canApply),
         ]);
     }
 
     public function apply(Request $request, Job $job): RedirectResponse
     {
         $user = $request->user();
-        $roles = is_array($user->role) ? $user->role : [$user->role];
-        if (! in_array('student', $roles, true)) {
-            abort(403);
-        }
 
         if (! $job->is_published) {
             abort(404);
         }
-        if ($job->user_id !== null && (int) $job->user_id === (int) $user->id) {
-            abort(403);
+
+        if ($job->applications()->where('user_id', $user->id)->exists()) {
+            return back()->with('error', __('You have already applied to this job.'));
         }
-        if ($job->recruiters()->where('users.id', $user->id)->exists()) {
+
+        if (! $this->userEligibleAsApplicant($job, $user)) {
             abort(403);
         }
 
@@ -121,10 +99,6 @@ class StudentJobController extends Controller
             'cover_letter' => ['required', 'string', 'max:10000'],
             'cv' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
         ]);
-
-        if ($job->applications()->where('user_id', $user->id)->exists()) {
-            return back()->with('error', __('You have already applied to this job.'));
-        }
 
         $cvPath = $request->file('cv')->store('job-application-cvs', 'public');
 
@@ -200,6 +174,72 @@ class StudentJobController extends Controller
             'is_owner' => $isManager,
             'manage' => $manage,
         ];
+    }
+
+    private function userCanStartNewApplication(Job $job, \App\Models\User $user): bool
+    {
+        if ($job->applications()->where('user_id', $user->id)->exists()) {
+            return false;
+        }
+
+        return $this->userEligibleAsApplicant($job, $user);
+    }
+
+    /**
+     * Who may post an application: students/coworkers, staff who browse job pages, or recruiters not assigned to this job.
+     * Blocks job creator and recruiters assigned to this posting.
+     */
+    private function userEligibleAsApplicant(Job $job, \App\Models\User $user): bool
+    {
+        $uid = (int) $user->id;
+        if ($job->user_id !== null && (int) $job->user_id === $uid) {
+            return false;
+        }
+        if ($job->recruiters()->where('users.id', $uid)->exists()) {
+            return false;
+        }
+
+        $roles = $this->normalizedRoleStrings($user);
+        $studentLike = ['student', 'coworker'];
+        $staffWhoBrowseJobs = ['admin', 'coach', 'moderateur', 'studio_responsable', 'super_admin', 'responsable_studio'];
+
+        if (array_intersect($roles, $studentLike) !== []) {
+            return true;
+        }
+        if (array_intersect($roles, $staffWhoBrowseJobs) !== []) {
+            return true;
+        }
+        if (in_array('recruiter', $roles, true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function normalizedRoleStrings(\App\Models\User $user): array
+    {
+        $raw = $user->role;
+        if ($raw === null || $raw === '') {
+            return [];
+        }
+        if (! is_array($raw)) {
+            $raw = [$raw];
+        }
+        $out = [];
+        foreach ($raw as $r) {
+            if ($r === null || $r === '') {
+                continue;
+            }
+            $s = strtolower(trim((string) $r));
+            if ($s !== '') {
+                $out[] = $s;
+            }
+        }
+
+        return array_values(array_unique($out));
     }
 
     private function distinctJobTypes(): Collection

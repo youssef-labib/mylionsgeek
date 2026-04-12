@@ -133,15 +133,6 @@ export default function JobShow({ job }) {
                                     </Button>
                                 </div>
                             )}
-
-                            {job.is_owner && job.manage && (
-                                <div className="mt-8 rounded-md border border-alpha/20 bg-alpha/5 p-4 dark:border-light/15">
-                                    <p className="text-sm font-medium text-beta dark:text-light">You manage this posting.</p>
-                                    <Button className="mt-3 bg-alpha text-black hover:bg-alpha/90" size="sm" asChild>
-                                        <Link href={job.manage.href}>{job.manage.label}</Link>
-                                    </Button>
-                                </div>
-                            )}
                         </article>
 
                         <Dialog open={applyOpen} onOpenChange={handleApplyDialogChange}>
