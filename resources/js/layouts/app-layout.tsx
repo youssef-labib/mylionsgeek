@@ -10,6 +10,32 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
+/** Student-style top nav routes (same links as `AppHeader`): hide admin sidebar for staff here. */
+function isStudentPublicShellPath(pathname: string): boolean {
+    if (pathname === '/students/feed') {
+        return true;
+    }
+    const prefixes = [
+        '/students/jobs',
+        '/students/leaderboard',
+        '/students/spaces',
+        '/students/reservations',
+        '/students/projects',
+        '/students/project',
+    ];
+
+    if (prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+        return true;
+    }
+
+    // Student profile & posts: /students/123, /students/123/posts
+    if (/^\/students\/\d+$/.test(pathname) || /^\/students\/\d+\/posts$/.test(pathname)) {
+        return true;
+    }
+
+    return false;
+}
+
 export default function AppLayout({ children, breadcrumbs, ...props }: AppLayoutProps) {
     const page = usePage<{ auth: { user: { role: string[] | string } } }>();
     const { auth } = page.props;
@@ -22,10 +48,10 @@ export default function AppLayout({ children, breadcrumbs, ...props }: AppLayout
         ['admin', 'moderateur', 'studio_responsable', 'coach', 'super_admin'].includes(role),
     );
 
-    // Student feed: use top navbar only (no admin sidebar) so staff can browse like students.
+    // Student-area pages: top navbar only (no admin sidebar) so staff browse like students.
     const pathname = page.url.split('?')[0];
-    const isStudentFeedRoute = pathname === '/students/feed';
-    const useSidebarLayout = (isRecruiter || isStaff) && !isStudentFeedRoute;
+    const useStudentHeaderShell = isStaff && isStudentPublicShellPath(pathname);
+    const useSidebarLayout = (isRecruiter || isStaff) && !useStudentHeaderShell;
 
     const Layout = useSidebarLayout ? AppSidebarLayout : AppHeaderLayout;
 

@@ -9,7 +9,7 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { Briefcase, Building2, Folder, Home, Medal, Menu, Search, Timer } from 'lucide-react';
+import { Briefcase, Building2, Folder, Home, LayoutGrid, Medal, Menu, Search, Timer } from 'lucide-react';
 import AppLogo from './app-logo';
 import ChatIcon from './chat/ChatIcon';
 import NotificationIcon from './NotificationIcon';
@@ -53,6 +53,9 @@ export function AppHeader({ breadcrumbs = [] }) {
     const getInitials = useInitials();
 
     const navPath = page.url.split('?')[0];
+    const userRoles = Array.isArray(auth.user.role) ? auth.user.role : [auth.user.role];
+    const showAdminDashboardIcon = userRoles.includes('admin') || userRoles.includes('super_admin');
+
     const isNavActive = (item) => {
         if (item.url === '/students/jobs') {
             return navPath.startsWith('/students/jobs');
@@ -91,6 +94,16 @@ export function AppHeader({ breadcrumbs = [] }) {
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className={`flex flex-col space-y-4 ${auth.user.language == 'ar' ? 'items-end' : ''}`}>
+                                            {showAdminDashboardIcon && (
+                                                <Link
+                                                    href="/admin/dashboard"
+                                                    prefetch
+                                                    className={`flex items-center space-x-2 font-medium text-alpha ${auth.user.language == 'ar' ? 'flex-row-reverse gap-2' : ''}`}
+                                                >
+                                                    <Icon iconNode={LayoutGrid} className="h-5 w-5" />
+                                                    <span>Dashboard</span>
+                                                </Link>
+                                            )}
                                             {mainNavItems.map((item) => (
                                                 <Link
                                                     key={item.title}
@@ -142,6 +155,13 @@ export function AppHeader({ breadcrumbs = [] }) {
 
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="flex items-center gap-4">
+                            {showAdminDashboardIcon && (
+                                <Link href="/admin/dashboard" prefetch aria-label="Admin dashboard">
+                                    <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0">
+                                        <LayoutGrid className="h-5 w-5" />
+                                    </Button>
+                                </Link>
+                            )}
                             <ChatIcon />
                             <NotificationIcon />
 
