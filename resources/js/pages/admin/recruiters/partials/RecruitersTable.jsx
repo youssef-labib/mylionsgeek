@@ -104,9 +104,9 @@ export default function RecruitersTable({ recruiters }) {
                                     onClick={() => changeAccountStatus(user)}
                                 >
                                     {user.account_state === 1 ? (
-                                        <CircleCheckBig size={25} className="text-green-600" />
-                                    ) : (
                                         <Trash size={25} className="text-error" />
+                                    ) : (
+                                        <CircleCheckBig size={25} className="text-green-600" />
                                     )}
                                 </Button>
                             </TableCell>

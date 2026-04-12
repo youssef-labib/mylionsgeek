@@ -59,22 +59,6 @@ const getAllNavItems = () => [
         icon: Users,
         excludedRoles: ['studio_responsable'],
     },
-
-    {
-        id: 'jobs',
-        title: 'Jobs',
-        href: '/admin/jobs',
-        icon: Briefcase,
-        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
-    },
-    {
-        id: 'recruiters',
-        title: 'Recruiters',
-        href: '/admin/recruiters',
-        icon: UserPlus,
-        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
-    },
-
     {
         id: 'projects',
         title: 'Projects',
@@ -105,6 +89,20 @@ const getAllNavItems = () => [
     { id: 'equipment', title: 'Equipment', href: '/admin/equipements', icon: Wrench, excludedRoles: ['coach'] },
     { id: 'training', title: 'Training', href: '/admin/training', icon: GraduationCap, excludedRoles: ['studio_responsable'] },
     // { id: 'games', title: 'Games', href: '/games', icon: Gamepad2 },
+    {
+        id: 'jobs',
+        title: 'Jobs',
+        href: '/admin/jobs',
+        icon: Briefcase,
+        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
+    },
+    {
+        id: 'recruiters',
+        title: 'Recruiters',
+        href: '/admin/recruiters',
+        icon: UserPlus,
+        authorizedRoles: ['admin', 'moderateur', 'super_admin'],
+    },
     { id: 'settings', title: 'Settings', href: '/settings', icon: Settings },
 ];
 
