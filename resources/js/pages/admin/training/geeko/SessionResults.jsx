@@ -174,7 +174,7 @@ export default function SessionResults({ session, leaderboard, questionStats, fo
                                             <div className="flex items-center space-x-4">
                                                 <div className={`text-2xl font-bold ${getRankColor(index + 1)}`}>{getRankBadge(index + 1)}</div>
                                                 <div className="flex items-center space-x-3">
-                                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-alpha text-lg font-bold text-dark">
+                                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-alpha text-lg font-bold text-black">
                                                         {(participant.nickname || participant.user?.name || 'U').charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>

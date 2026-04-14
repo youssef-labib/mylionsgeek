@@ -643,7 +643,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                                 className="flex items-center space-x-3 cursor-pointer hover:bg-alpha/5 p-2 rounded-lg transition-colors flex-1"
                                                 onClick={() => router.visit(`/admin/users/${user.id}`)}
                                             >
-                                                <div className="w-10 h-10 rounded-full bg-alpha text-light flex items-center justify-center font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-alpha text-black flex items-center justify-center font-bold">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
@@ -678,7 +678,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                     <div className="space-y-6">
                         {/* Coach Card */}
                         <div className="bg-light dark:bg-dark rounded-2xl border border-alpha/20 p-6 flex items-center space-x-4">
-                            <div className="w-14 h-14 rounded-full bg-alpha flex items-center justify-center text-light font-bold text-lg">
+                            <div className="w-14 h-14 rounded-full bg-alpha flex items-center justify-center text-black font-bold text-lg">
                                 {training.coach
                                     ? training.coach.name.split(' ').map(n => n[0]).join('').toUpperCase()
                                     : 'C'}
@@ -809,7 +809,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                             onClick={() => router.visit(`/students/${user.id}`)}
                                         >
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 rounded-full bg-alpha text-light flex items-center justify-center font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-alpha text-black flex items-center justify-center font-bold">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
@@ -986,7 +986,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                         return (
                                             <div key={student.id} className="rounded-lg border border-alpha/20 p-3">
                                                 <div className="flex items-center gap-3 mb-3">
-                                                    <div className="w-9 h-9 rounded-full bg-alpha text-light flex items-center justify-center font-bold">
+                                                    <div className="w-9 h-9 rounded-full bg-alpha text-black flex items-center justify-center font-bold">
                                                         {student.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="min-w-0">
@@ -1077,7 +1077,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                                             />
                                                             <button
                                                                 type="button"
-                                                                className="px-3 py-1 rounded-md bg-alpha/10 text-black dark:text-white hover:bg-alpha/20 text-xs font-medium transition-colors"
+                                                                className="px-3 py-1 rounded-md bg-alpha/10 text-black dark:text-black hover:bg-alpha/20 text-xs font-medium transition-colors"
                                                                 onClick={(e) => {
                                                                     const input = (e.currentTarget.previousElementSibling);
                                                                     const val = input && 'value' in input ? input.value : '';
@@ -1119,7 +1119,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                                         <tr key={student.id} className="hover:bg-accent/30 transition-colors">
                                                             <td className="px-4 py-3">
                                                                 <div className="flex items-center space-x-3">
-                                                                    <div className="w-10 h-10 rounded-full bg-alpha text-light flex items-center justify-center font-bold">
+                                                                    <div className="w-10 h-10 rounded-full bg-alpha text-black flex items-center justify-center font-bold">
                                                                         {student.name.charAt(0).toUpperCase()}
                                                                     </div>
                                                                     <div>
@@ -1344,7 +1344,7 @@ export default function Show({ training, usersNull, courses = [] }) {
                                             }}
                                         />
                                         <div className="flex items-center space-x-3 flex-1">
-                                            <div className="w-10 h-10 rounded-full bg-alpha text-light flex items-center justify-center font-bold">
+                                            <div className="w-10 h-10 rounded-full bg-alpha text-black flex items-center justify-center font-bold">
                                                 {student.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>

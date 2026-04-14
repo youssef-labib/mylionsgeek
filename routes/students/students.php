@@ -4,15 +4,25 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentJobController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\UserSocialLinkController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
+Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable'])->prefix('students')->group(function () {
+    Route::get('/feed', [StudentController::class, 'index'])->name('student.feed');
+});
+
+// Recruiters may browse and apply to jobs only — not student social profiles.
+Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable,responsable_studio,coworker,moderateur,super_admin,recruiter'])->prefix('students')->group(function () {
+    Route::get('/jobs', [StudentJobController::class, 'index'])->name('student.jobs.index');
+    Route::get('/jobs/{job}', [StudentJobController::class, 'show'])->whereNumber('job')->name('student.jobs.show');
+    Route::post('/jobs/{job}/apply', [StudentJobController::class, 'apply'])->whereNumber('job')->name('student.jobs.apply');
+});
 
 Route::middleware(['auth', 'verified', 'role:admin,coach,student,studio_responsable'])->prefix('students')->group(function () {
     Route::put('/update/{user}', [UsersController::class, 'update']);
-    Route::get('/feed', [StudentController::class, 'index'])->name('student.feed');
+    Route::get('/{id}/posts', [StudentController::class, 'userPosts'])->whereNumber('id')->name('student.posts');
     Route::get('/{id}', [StudentController::class, 'userProfile'])->whereNumber('id');
     Route::post('/changeCover/{id}', [StudentController::class, 'changeCover']);
     Route::post('/changeProfileImage/{id}', [StudentController::class, 'changeProfileImage']);

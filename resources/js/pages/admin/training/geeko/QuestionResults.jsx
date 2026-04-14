@@ -36,7 +36,7 @@ export default function QuestionResults({ session, question, answers = [], forma
                 <div className="mx-auto max-w-5xl">
                     <div className="mb-6 flex items-center justify-between">
                         <h1 className="text-2xl font-extrabold text-dark dark:text-light">Round Results</h1>
-                        <button onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-dark">
+                        <button onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-black">
                             <span>Next</span>
                             <SkipForward size={16} />
                         </button>

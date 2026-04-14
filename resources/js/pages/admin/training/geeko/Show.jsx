@@ -489,7 +489,7 @@ export default function ShowGeeko({ formation, geeko }) {
                                 {geeko.status === 'ready' && (geeko.questions?.length || 0) > 0 && (
                                     <button
                                         onClick={handleStartSession}
-                                        className="flex items-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-medium text-dark transition-colors hover:bg-alpha/90"
+                                        className="flex items-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-medium text-black transition-colors hover:bg-alpha/90"
                                     >
                                         <Play size={16} />
                                         <span>Start Game</span>
@@ -510,7 +510,7 @@ export default function ShowGeeko({ formation, geeko }) {
                         </div>
                         <button
                             onClick={handleAddQuestion}
-                            className="flex items-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-medium text-dark transition-colors hover:bg-alpha/90"
+                            className="flex items-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-medium text-black transition-colors hover:bg-alpha/90"
                         >
                             <Plus size={16} />
                             <span>Add Question</span>
@@ -726,7 +726,7 @@ export default function ShowGeeko({ formation, geeko }) {
                                 </p>
                                 <button
                                     onClick={handleAddQuestion}
-                                    className="inline-flex items-center space-x-2 rounded-lg bg-alpha px-6 py-3 font-semibold text-dark transition-colors hover:bg-alpha/90"
+                                    className="inline-flex items-center space-x-2 rounded-lg bg-alpha px-6 py-3 font-semibold text-black transition-colors hover:bg-alpha/90"
                                 >
                                     <Plus size={20} />
                                     <span>Add Your First Question</span>
@@ -802,7 +802,7 @@ export default function ShowGeeko({ formation, geeko }) {
                                 <button
                                     onClick={handleConfirmAndCreateSession}
                                     disabled={!meta.title?.trim()}
-                                    className="rounded-lg bg-alpha px-6 py-2 font-medium text-dark transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="rounded-lg bg-alpha px-6 py-2 font-medium text-black transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     Start Game
                                 </button>
@@ -962,7 +962,7 @@ function QuestionCard({
                                             <button
                                                 type="button"
                                                 onClick={() => toggleLocalCorrect(question.id, optionIndex, question.type)}
-                                                className={`h-8 w-8 rounded-full border-2 ${isCorrect ? 'border-alpha bg-alpha text-dark' : 'border-dark/30 bg-transparent dark:border-light/30'} flex items-center justify-center transition-colors hover:bg-alpha/10`}
+                                                className={`h-8 w-8 rounded-full border-2 ${isCorrect ? 'border-alpha bg-alpha text-black' : 'border-dark/30 bg-transparent dark:border-light/30'} flex items-center justify-center transition-colors hover:bg-alpha/10`}
                                             >
                                                 {isCorrect ? <CheckCircle size={14} /> : ''}
                                             </button>
@@ -1045,7 +1045,7 @@ function QuestionCard({
                         <div className="flex gap-2 pt-4">
                             <button
                                 onClick={() => saveQuestion(question)}
-                                className="inline-flex flex-1 items-center justify-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-dark hover:bg-alpha/90"
+                                className="inline-flex flex-1 items-center justify-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-black hover:bg-alpha/90"
                             >
                                 <Save size={16} />
                                 <span>Save</span>

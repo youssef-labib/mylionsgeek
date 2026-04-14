@@ -1,10 +1,12 @@
 import Education from './components/Education';
 import Experience from './components/Experience';
+import ProfilePostsPreview from './ProfilePostsPreview';
 
-const RightColumn = ({ user }) => {
+const RightColumn = ({ user, postsPreview = [], postsTotal = 0 }) => {
     return (
         <>
             <div className="space-y-4 lg:col-span-2">
+                <ProfilePostsPreview user={user} postsPreview={postsPreview} postsTotal={postsTotal} />
                 {/* Education Card */}
                 <Education user={user} />
                 <Experience user={user} />

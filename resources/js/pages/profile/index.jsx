@@ -249,7 +249,7 @@ const CompleteProfile = ({ user }) => {
                                 type="button"
                                 onClick={() => handleSubmit(user.activation_token)}
                                 disabled={processing}
-                                className="w-full rounded-lg bg-alpha px-6 py-2.5 font-semibold text-beta hover:bg-alpha hover:text-beta"
+                                className="w-full rounded-lg bg-alpha px-6 py-2.5 font-semibold text-black hover:bg-alpha hover:text-black"
                             >
                                 {processing ? 'Submitting...' : 'Next'}
                             </Button>

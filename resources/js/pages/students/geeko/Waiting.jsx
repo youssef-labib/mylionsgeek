@@ -68,7 +68,7 @@ export default function GeekoWaiting({ session, participant, leaderboard = [] })
                                     >
                                         <div className="flex items-center gap-3">
                                             <div
-                                                className={`flex h-10 w-10 items-center justify-center rounded-lg ${idx === 0 ? 'bg-alpha text-dark' : 'bg-white/70 text-dark/80 dark:bg-dark/60 dark:text-light/80'}`}
+                                                className={`flex h-10 w-10 items-center justify-center rounded-lg ${idx === 0 ? 'bg-alpha text-black' : 'bg-white/70 text-black/80 dark:bg-dark/60 dark:text-black/80'}`}
                                             >
                                                 {idx === 0 ? (
                                                     <Trophy size={20} />

@@ -648,10 +648,10 @@ export default function SpacesPage() {
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Button className="h-fit rounded-lg bg-alpha px-2 py-2 text-beta" onClick={() => setIsExternalReservationModalOpen(true)}>
+                        <Button className="h-fit rounded-lg bg-alpha px-2 py-2 text-black" onClick={() => setIsExternalReservationModalOpen(true)}>
                             External Reservation
                         </Button>
-                        <Button className="h-fit rounded-lg bg-alpha px-2 py-2 text-beta" onClick={() => setIsAppointmentModalOpen(true)}>
+                        <Button className="h-fit rounded-lg bg-alpha px-2 py-2 text-black" onClick={() => setIsAppointmentModalOpen(true)}>
                             Book an appointment
                         </Button>
                     </div>

@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Mail\UserInvitedPasswordMail;
-use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
     public function inviteStudent(Request $request)
     {
-        $data =  $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'phone' => ['required', 'max:15'],
@@ -41,7 +41,8 @@ class UserController extends Controller
             'remember_token' => null,
             'email_verified_at' => null,
         ]);
-        Mail::to($user->email)->queue(new UserInvitedPasswordMail($user, $plainPassword));
+        Mail::to($user->email)->send(new UserInvitedPasswordMail($user, $plainPassword));
+
         return response()->json([
             'status' => 'created',
             'data' => $user,

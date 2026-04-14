@@ -22,7 +22,7 @@ const BoardHeader = ({ fetchLeaderboardData, isRefreshing, fetchPreviousWeekPodi
                         <button
                             onClick={fetchLeaderboardData}
                             disabled={isRefreshing}
-                            className="flex items-center gap-3 px-6 py-3 bg-alpha text-dark rounded-xl hover:bg-alpha/80 disabled:opacity-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 font-semibold"
+                            className="flex items-center gap-3 px-6 py-3 bg-alpha text-black rounded-xl hover:bg-alpha/80 disabled:opacity-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 font-semibold"
                         >
                             <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
                             {isRefreshing ? 'Refreshing...' : 'Refresh Data'}

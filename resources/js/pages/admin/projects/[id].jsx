@@ -370,7 +370,7 @@ const ProjectShow = ({ project, teamMembers, tasks, attachments, notes, canManag
                                     <TabsTrigger value="activity" className="relative">
                                         Activity
                                         {recentActivities.filter((a) => !a.read).length > 0 && (
-                                            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-alpha text-[10px] text-primary-foreground">
+                                            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-alpha text-[10px] text-black">
                                                 {recentActivities.filter((a) => !a.read).length}
                                             </span>
                                         )}

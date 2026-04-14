@@ -3,7 +3,7 @@ import Header from './profile/Header';
 import LeftColumn from './profile/LeftColumn';
 import RightColumn from './profile/RightColumn';
 
-const StudentProfile = ({ user }) => {
+const StudentProfile = ({ user, profilePostsPreview = [], profilePostsTotal = 0 }) => {
     const currentUser = user.user;
 
     const userFunctionality = (user) => {
@@ -26,7 +26,11 @@ const StudentProfile = ({ user }) => {
                         <LeftColumn user={currentUser} />
 
                         {/* Right Column */}
-                        <RightColumn user={currentUser} />
+                        <RightColumn
+                            user={currentUser}
+                            postsPreview={profilePostsPreview}
+                            postsTotal={profilePostsTotal}
+                        />
                     </div>
                 </div>
             </div>

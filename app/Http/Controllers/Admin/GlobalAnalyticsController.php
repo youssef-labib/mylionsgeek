@@ -9,7 +9,6 @@ use App\Models\Equipment;
 use App\Models\Project;
 use App\Models\Reservation;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
 class GlobalAnalyticsController extends Controller
@@ -22,7 +21,7 @@ class GlobalAnalyticsController extends Controller
         $latestReservations = Reservation::with(['user:id,name', 'studio:id,name'])
             ->orderByDesc('created_at')
             ->limit(10)
-            ->get(['id','title','day','start','end','approved','canceled','user_id','studio_id','type','created_at'])
+            ->get(['id', 'title', 'day', 'start', 'end', 'approved', 'canceled', 'user_id', 'studio_id', 'type', 'created_at'])
             ->map(function ($r) {
                 return [
                     'id' => $r->id,
@@ -31,8 +30,8 @@ class GlobalAnalyticsController extends Controller
                     'date' => $r->day,
                     'start' => $r->start,
                     'end' => $r->end,
-                    'approved' => (bool)$r->approved,
-                    'canceled' => (bool)$r->canceled,
+                    'approved' => (bool) $r->approved,
+                    'canceled' => (bool) $r->canceled,
                     'user_name' => $r->user->name ?? null,
                     'studio_name' => $r->studio->name ?? null,
                     'created_at' => $r->created_at?->toDateTimeString(),
@@ -41,7 +40,7 @@ class GlobalAnalyticsController extends Controller
 
         // Computers with assignment
         $computers = Computer::with('user:id,name')
-            ->get(['id','reference','state','user_id','mark'])
+            ->get(['id', 'reference', 'state', 'user_id', 'mark'])
             ->map(function ($c) {
                 return [
                     'id' => $c->id,
@@ -54,15 +53,15 @@ class GlobalAnalyticsController extends Controller
 
         // Equipment state + whether in today's reservation
         $equipment = Equipment::withCount(['reservations as in_reservation_today' => function ($q) use ($today) {
-                $q->whereDate('reservations.day', '=', $today)->whereNull('reservations.canceled');
-            }])
-            ->get(['id','reference','mark','state'])
+            $q->whereDate('reservations.day', '=', $today)->whereNull('reservations.canceled');
+        }])
+            ->get(['id', 'reference', 'mark', 'state'])
             ->map(function ($e) {
                 return [
                     'id' => $e->id,
                     'reference' => $e->reference,
                     'mark' => $e->mark,
-                    'state' => (bool)$e->state,
+                    'state' => (bool) $e->state,
                     'in_reservation_today' => $e->in_reservation_today > 0,
                 ];
             });
@@ -75,10 +74,11 @@ class GlobalAnalyticsController extends Controller
                 AND NULLIF(TRIM(lunch), "") IS NULL
                 AND NULLIF(TRIM(evening), "") IS NULL
             )')
-            ->get(['user_id','attendance_day','morning','lunch','evening']);
+            ->get(['user_id', 'attendance_day', 'morning', 'lunch', 'evening']);
 
         $absentToday = $todayRows->map(function ($row) {
             $u = User::find($row->user_id);
+
             return [
                 'id' => $row->user_id,
                 'name' => $u->name ?? ('User #'.$row->user_id),
@@ -110,7 +110,8 @@ class GlobalAnalyticsController extends Controller
             ->get()
             ->map(function ($row) {
                 $u = User::find($row->user_id);
-                return ['user_id'=>$row->user_id, 'name'=>$u->name ?? ('User #'.$row->user_id), 'absences'=>(int)$row->absences, 'am'=>(int)$row->am, 'noon'=>(int)$row->noon, 'pm'=>(int)$row->pm];
+
+                return ['user_id' => $row->user_id, 'name' => $u->name ?? ('User #'.$row->user_id), 'absences' => (int) $row->absences, 'am' => (int) $row->am, 'noon' => (int) $row->noon, 'pm' => (int) $row->pm];
             });
 
         $absentMonth = AttendanceListe::selectRaw('user_id,
@@ -125,7 +126,8 @@ class GlobalAnalyticsController extends Controller
             ->get()
             ->map(function ($row) {
                 $u = User::find($row->user_id);
-                return ['user_id'=>$row->user_id, 'name'=>$u->name ?? ('User #'.$row->user_id), 'absences'=>(int)$row->absences, 'am'=>(int)$row->am, 'noon'=>(int)$row->noon, 'pm'=>(int)$row->pm];
+
+                return ['user_id' => $row->user_id, 'name' => $u->name ?? ('User #'.$row->user_id), 'absences' => (int) $row->absences, 'am' => (int) $row->am, 'noon' => (int) $row->noon, 'pm' => (int) $row->pm];
             });
 
         // Most absent overall
@@ -136,12 +138,13 @@ class GlobalAnalyticsController extends Controller
             ->get()
             ->map(function ($row) {
                 $u = User::find($row->user_id);
-                return ['user_id'=>$row->user_id, 'name'=>$u->name ?? ('User #'.$row->user_id), 'absences'=>(int) $row->absences];
+
+                return ['user_id' => $row->user_id, 'name' => $u->name ?? ('User #'.$row->user_id), 'absences' => (int) $row->absences];
             });
 
         // Newest projects
-        $projects = Project::orderByDesc('created_at')->limit(8)->get(['id','name','created_at'])->map(function ($p) {
-            return [ 'id'=>$p->id, 'name'=>$p->name, 'created_at'=>$p->created_at?->toDateString() ];
+        $projects = Project::orderByDesc('created_at')->limit(8)->get(['id', 'name', 'created_at'])->map(function ($p) {
+            return ['id' => $p->id, 'name' => $p->name, 'created_at' => $p->created_at?->toDateString()];
         });
 
         // Topline stats
@@ -167,5 +170,3 @@ class GlobalAnalyticsController extends Controller
         ]);
     }
 }
-
-

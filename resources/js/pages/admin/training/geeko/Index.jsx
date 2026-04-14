@@ -75,7 +75,7 @@ export default function GeekoIndex({ formation, geekos }) {
                     </div>
                     <button
                         onClick={handleCreateGeeko}
-                        className="flex items-center space-x-2 rounded-xl bg-alpha px-6 py-3 font-bold text-dark transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
+                        className="flex items-center space-x-2 rounded-xl bg-alpha px-6 py-3 font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
                     >
                         <Plus size={20} />
                         <span>Create New Geeko</span>
@@ -189,7 +189,7 @@ export default function GeekoIndex({ formation, geekos }) {
                                         {geeko.status === 'ready' && (
                                             <button
                                                 onClick={() => handleStartSession(geeko.id)}
-                                                className="flex flex-1 items-center justify-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-dark transition-colors hover:bg-alpha/90"
+                                                className="flex flex-1 items-center justify-center space-x-2 rounded-lg bg-alpha px-4 py-2 font-semibold text-black transition-colors hover:bg-alpha/90"
                                             >
                                                 <Play size={16} />
                                                 <span>Start Game</span>
@@ -211,7 +211,7 @@ export default function GeekoIndex({ formation, geekos }) {
                         </p>
                         <button
                             onClick={handleCreateGeeko}
-                            className="inline-flex items-center space-x-2 rounded-xl bg-alpha px-8 py-4 font-bold text-dark transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
+                            className="inline-flex items-center space-x-2 rounded-xl bg-alpha px-8 py-4 font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
                         >
                             <Plus size={20} />
                             <span>Create Your First Geeko</span>

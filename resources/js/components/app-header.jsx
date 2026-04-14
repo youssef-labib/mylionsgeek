@@ -9,14 +9,14 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { Building2, Folder, Home, Medal, Menu, Search, Timer } from 'lucide-react';
+import { Briefcase, Building2, Folder, Home, LayoutGrid, Medal, Menu, Search, Timer } from 'lucide-react';
 import AppLogo from './app-logo';
 import ChatIcon from './chat/ChatIcon';
 import NotificationIcon from './NotificationIcon';
 import SearchDialog from './search-dialog';
 import ThemeToggle from './ThemeToggle';
 
-const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-dark dark:bg-alpha';
+const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-black dark:bg-alpha';
 
 export function AppHeader({ breadcrumbs = [] }) {
     const page = usePage();
@@ -26,6 +26,11 @@ export function AppHeader({ breadcrumbs = [] }) {
             title: 'Home',
             url: '/students/feed',
             icon: Home,
+        },
+        {
+            title: 'Jobs',
+            url: '/students/jobs',
+            icon: Briefcase,
         },
         {
             title: 'Leaderboard',
@@ -44,17 +49,24 @@ export function AppHeader({ breadcrumbs = [] }) {
             url: '/students/projects',
             icon: Folder,
         },
-        // {
-        //     title: 'Games',
-        //     url: '/games',
-        //     icon: Gamepad2,
-        // },
     ];
     const getInitials = useInitials();
+
+    const navPath = page.url.split('?')[0];
+    const userRoles = Array.isArray(auth.user.role) ? auth.user.role : [auth.user.role];
+    const showAdminDashboardIcon = userRoles.includes('admin') || userRoles.includes('super_admin');
+
+    const isNavActive = (item) => {
+        if (item.url === '/students/jobs') {
+            return navPath.startsWith('/students/jobs');
+        }
+        return navPath === item.url;
+    };
+
     return (
         <>
             <div
-                className={`border-sidebar-border/80 ${auth.user.role.includes('student') && 'fixed'} z-30 mx-auto w-full border-b bg-light dark:bg-dark`}
+                className={`border-sidebar-border/80 ${(Array.isArray(auth.user.role) ? auth.user.role : [auth.user.role]).some((r) => ['student', 'coworker'].includes(r)) && 'fixed'} z-30 mx-auto w-full border-b bg-light dark:bg-dark`}
             >
                 <div className="mx-auto flex h-16 items-center justify-between px-4 md:max-w-7xl">
                     {/* Mobile Menu */}
@@ -82,6 +94,16 @@ export function AppHeader({ breadcrumbs = [] }) {
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className={`flex flex-col space-y-4 ${auth.user.language == 'ar' ? 'items-end' : ''}`}>
+                                            {showAdminDashboardIcon && (
+                                                <Link
+                                                    href="/admin/dashboard"
+                                                    prefetch
+                                                    className={`flex items-center space-x-2 font-medium text-alpha ${auth.user.language == 'ar' ? 'flex-row-reverse gap-2' : ''}`}
+                                                >
+                                                    <Icon iconNode={LayoutGrid} className="h-5 w-5" />
+                                                    <span>Dashboard</span>
+                                                </Link>
+                                            )}
                                             {mainNavItems.map((item) => (
                                                 <Link
                                                     key={item.title}
@@ -115,14 +137,14 @@ export function AppHeader({ breadcrumbs = [] }) {
                                             href={item.url}
                                             className={cn(
                                                 navigationMenuTriggerStyle(),
-                                                page.url === item.url && activeItemStyles,
+                                                isNavActive(item) && activeItemStyles,
                                                 'h-9 cursor-pointer px-3',
                                             )}
                                         >
                                             {item.icon && <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />}
                                             {item.title}
                                         </Link>
-                                        {page.url === item.url && (
+                                        {isNavActive(item) && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-alpha dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>
@@ -133,6 +155,13 @@ export function AppHeader({ breadcrumbs = [] }) {
 
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="flex items-center gap-4">
+                            {showAdminDashboardIcon && (
+                                <Link href="/admin/dashboard" prefetch aria-label="Admin dashboard">
+                                    <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0">
+                                        <LayoutGrid className="h-5 w-5" />
+                                    </Button>
+                                </Link>
+                            )}
                             <ChatIcon />
                             <NotificationIcon />
 

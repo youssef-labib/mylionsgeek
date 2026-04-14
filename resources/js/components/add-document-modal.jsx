@@ -260,7 +260,7 @@ function DocumentList({ title, count, items, user, type }) {
         <div className="rounded-xl border bg-gradient-to-br from-alpha/5 to-alpha/10 p-4">
             <div className="mb-4 flex items-center justify-between">
                 <div className="font-bold">{title}</div>
-                <div className="rounded-full bg-alpha px-2 py-1 text-xs text-white">{count}</div>
+                <div className="rounded-full bg-alpha px-2 py-1 text-xs text-black">{count}</div>
             </div>
 
             {items.length > 0 ? (

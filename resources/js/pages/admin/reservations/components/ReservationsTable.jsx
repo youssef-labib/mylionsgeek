@@ -30,7 +30,7 @@ const ReservationsTable = ({ reservations, loadingAction, setLoadingAction, onRo
                                         key="pdf"
                                         size="sm"
                                         variant="outline"
-                                        className="h-8 cursor-pointer px-2 hover:bg-alpha dark:text-white dark:hover:bg-alpha"
+                                        className="h-8 cursor-pointer px-2 hover:bg-alpha dark:text-black dark:hover:bg-alpha"
                                         onClick={() => {
                                             window.open(`/admin/reservations/${r.id}/pdf`, '_blank');
                                         }}

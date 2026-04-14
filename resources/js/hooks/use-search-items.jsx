@@ -3,6 +3,7 @@ import {
     BarChart3,
     BookOpen,
     Boxes,
+    Briefcase,
     Building2,
     CalendarCheck2,
     CheckSquare,
@@ -38,6 +39,14 @@ export function useSearchItems() {
                 category: 'Navigation',
                 icon: Trophy,
                 keywords: ['leader', 'ranking', 'score', 'winners'],
+            },
+            {
+                title: 'Jobs',
+                href: '/students/jobs',
+                category: 'Navigation',
+                icon: Briefcase,
+                keywords: ['jobs', 'career', 'internship', 'full-time', 'hiring', 'employment'],
+                description: 'Browse open job listings',
             },
 
             // User Management

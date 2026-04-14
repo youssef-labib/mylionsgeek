@@ -362,7 +362,7 @@ const EditExperienceModal = ({ onChange, onOpenChange, item }) => {
                         <button
                             onClick={editExperience}
                             disabled={processing || dateError}
-                            className="rounded-full bg-alpha px-6 py-2 font-medium text-beta transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50 dark:text-dark"
+                            className="rounded-full bg-alpha px-6 py-2 font-medium text-black transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50 dark:text-black"
                         >
                             {processing ? 'Saving...' : 'Save'}
                         </button>

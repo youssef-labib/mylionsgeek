@@ -182,7 +182,7 @@ export default function EditGeeko({ formation, geeko }) {
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="flex items-center space-x-2 rounded-lg bg-alpha px-6 py-3 font-semibold text-dark transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex items-center space-x-2 rounded-lg bg-alpha px-6 py-3 font-semibold text-black transition-colors hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 <Save size={16} />
                                 <span>{processing ? 'Saving...' : 'Save Changes'}</span>

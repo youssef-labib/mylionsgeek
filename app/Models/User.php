@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgotPasswordLinkMail;
@@ -248,5 +249,11 @@ class User extends Authenticatable
     public function socialLinks()
     {
         return $this->hasMany(UserSocialLink::class);
+    }
+
+    /** Job postings this recruiter is assigned to (not necessarily the creator). */
+    public function assignedJobPostings(): BelongsToMany
+    {
+        return $this->belongsToMany(Job::class, 'job_posting_recruiter', 'user_id', 'job_posting_id')->withTimestamps();
     }
 }

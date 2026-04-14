@@ -178,7 +178,7 @@ export default function BookAppointment({ isOpen, onClose, onSuccess }) {
                                 <div className="flex items-center justify-between">
                                     <div className={`flex items-center ${step >= 1 ? 'text-alpha' : 'text-gray-400'}`}>
                                         <div
-                                            className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 1 ? 'bg-alpha text-white' : 'bg-gray-200 dark:bg-neutral-700'}`}
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 1 ? 'bg-alpha text-black' : 'bg-gray-200 dark:bg-neutral-700'}`}
                                         >
                                             {step > 1 ? '✓' : '1'}
                                         </div>
@@ -192,7 +192,7 @@ export default function BookAppointment({ isOpen, onClose, onSuccess }) {
                                     </div>
                                     <div className={`flex items-center ${step >= 2 ? 'text-alpha' : 'text-gray-400'}`}>
                                         <div
-                                            className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 2 ? 'bg-alpha text-white' : 'bg-gray-200 dark:bg-neutral-700'}`}
+                                            className={`flex h-8 w-8 items-center justify-center rounded-full ${step >= 2 ? 'bg-alpha text-black' : 'bg-gray-200 dark:bg-neutral-700'}`}
                                         >
                                             2
                                         </div>
@@ -242,7 +242,7 @@ export default function BookAppointment({ isOpen, onClose, onSuccess }) {
                                             <Button type="button" variant="outline" onClick={handleClose} className="flex-1">
                                                 Cancel
                                             </Button>
-                                            <Button type="button" onClick={handleNext} className="flex-1 bg-alpha text-beta hover:bg-alpha/90">
+                                            <Button type="button" onClick={handleNext} className="flex-1 bg-alpha text-black hover:bg-alpha/90">
                                                 Next
                                             </Button>
                                         </div>
@@ -307,7 +307,7 @@ export default function BookAppointment({ isOpen, onClose, onSuccess }) {
                                             <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={loading}>
                                                 Back
                                             </Button>
-                                            <Button type="submit" className="flex-1 bg-alpha text-beta hover:bg-alpha/90" disabled={loading}>
+                                            <Button type="submit" className="flex-1 bg-alpha text-black hover:bg-alpha/90" disabled={loading}>
                                                 {loading ? 'Booking...' : 'Book Appointment'}
                                             </Button>
                                         </div>

@@ -252,7 +252,7 @@ export default function Create({ formation, coach, coachId }) {
                                     disabled={questions.filter((q) => q.isComplete).length === 0}
                                     className={`rounded-xl px-8 py-3 font-bold shadow-lg transition-all duration-300 ${
                                         questions.filter((q) => q.isComplete).length > 0
-                                            ? 'bg-alpha text-dark hover:scale-105 hover:bg-alpha/90'
+                                            ? 'bg-alpha text-black hover:scale-105 hover:bg-alpha/90'
                                             : 'cursor-not-allowed bg-dark/20 text-dark/50 dark:bg-light/20 dark:text-light/50'
                                     }`}
                                 >
@@ -281,7 +281,7 @@ export default function Create({ formation, coach, coachId }) {
                                             onClick={() => setSelectedQuestionId(question.id)}
                                             className={`cursor-pointer rounded-xl p-4 transition-all duration-300 ${
                                                 question.id === selectedQuestionId
-                                                    ? 'border-2 border-alpha bg-alpha text-dark shadow-lg'
+                                                    ? 'border-2 border-alpha bg-alpha text-black shadow-lg'
                                                     : 'border border-alpha/20 bg-light text-dark/70 hover:border-alpha/40 hover:shadow-md dark:bg-dark dark:text-light/70'
                                             }`}
                                         >
@@ -289,7 +289,7 @@ export default function Create({ formation, coach, coachId }) {
                                                 <div className="flex items-center space-x-3">
                                                     <span
                                                         className={`h-8 w-8 ${
-                                                            question.isComplete ? 'bg-good text-light' : 'bg-alpha text-dark'
+                                                            question.isComplete ? 'bg-good text-black' : 'bg-alpha text-black'
                                                         } flex items-center justify-center rounded-full text-sm font-bold`}
                                                     >
                                                         {question.isComplete ? '✓' : getQuestionTypeIcon(question.type)}
@@ -330,7 +330,7 @@ export default function Create({ formation, coach, coachId }) {
                             <div className="space-y-4">
                                 <button
                                     onClick={addQuestion}
-                                    className="w-full rounded-xl bg-alpha px-4 py-3 font-bold text-dark transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
+                                    className="w-full rounded-xl bg-alpha px-4 py-3 font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-alpha/90"
                                 >
                                     + Add Question
                                 </button>
@@ -359,7 +359,7 @@ export default function Create({ formation, coach, coachId }) {
                                     <div className="flex items-center space-x-3">
                                         <span
                                             className={`flex h-6 w-6 items-center justify-center rounded-full text-sm font-bold ${
-                                                selectedQuestion.isComplete ? 'bg-good text-light' : 'bg-alpha text-dark'
+                                                selectedQuestion.isComplete ? 'bg-good text-black' : 'bg-alpha text-black'
                                             }`}
                                         >
                                             {selectedQuestion.isComplete ? '✓' : '!'}
@@ -430,7 +430,7 @@ export default function Create({ formation, coach, coachId }) {
                                                 <div
                                                     className={`${
                                                         option.isCorrect
-                                                            ? 'bg-alpha text-dark shadow-lg'
+                                                            ? 'bg-alpha text-black shadow-lg'
                                                             : 'border-2 border-alpha/30 bg-light hover:border-alpha/50 dark:bg-dark'
                                                     } flex items-center justify-between rounded-2xl p-6 shadow-lg transition-all duration-300 hover:shadow-xl`}
                                                 >
@@ -483,7 +483,7 @@ export default function Create({ formation, coach, coachId }) {
                                                             }}
                                                             className={`h-8 w-8 rounded-full border-2 ${
                                                                 option.isCorrect
-                                                                    ? 'border-alpha bg-alpha text-dark'
+                                                                    ? 'border-alpha bg-alpha text-black'
                                                                     : 'border-dark/30 bg-transparent dark:border-light/30'
                                                             } flex items-center justify-center transition-colors hover:bg-alpha/20`}
                                                         >
@@ -632,7 +632,7 @@ export default function Create({ formation, coach, coachId }) {
                             <button
                                 onClick={submitGame}
                                 disabled={processing || !data.title.trim()}
-                                className="rounded-xl bg-alpha px-8 py-3 font-bold text-dark transition-all duration-300 hover:scale-105 hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-xl bg-alpha px-8 py-3 font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-alpha/90 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {processing ? 'Saving Quiz...' : 'Save & Preview'}
                             </button>

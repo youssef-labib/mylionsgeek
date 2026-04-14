@@ -367,7 +367,7 @@ export default function Leaderboard() {
                 <button
                     onClick={fetchLeaderboardData}
                     disabled={isRefreshing}
-                    className="rounded-full bg-alpha p-4 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-alpha/80 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-full bg-alpha p-4 text-black shadow-lg transition-all duration-300 hover:scale-110 hover:bg-alpha/80 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     <RefreshCw className={`h-6 w-6 ${isRefreshing ? 'animate-spin' : ''}`} />
                 </button>
@@ -553,7 +553,7 @@ export default function Leaderboard() {
                                 ? 'border-green-400 bg-green-500/90 text-white'
                                 : notification.type === 'error'
                                   ? 'border-red-400 bg-red-500/90 text-white'
-                                  : 'border-alpha/40 bg-alpha/90 text-white'
+                                  : 'border-alpha/40 bg-alpha/90 text-black'
                         }`}
                     >
                         <div className="flex items-center gap-2">

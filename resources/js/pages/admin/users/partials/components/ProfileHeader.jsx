@@ -161,7 +161,7 @@ const ProfileHeader = ({ user, trainings, roles, stats }) => {
                                             {/* Edit button */}
                                             <button
                                                 onClick={() => setOpen(true)}
-                                                className="flex items-center gap-2 rounded-lg bg-alpha px-4 py-2 text-sm font-semibold text-beta shadow-lg transition-all hover:shadow-xl"
+                                                className="flex items-center gap-2 rounded-lg bg-alpha px-4 py-2 text-sm font-semibold text-black shadow-lg transition-all hover:shadow-xl"
                                             >
                                                 <Edit3 className="h-4 w-4" />
                                                 Edit Profile
